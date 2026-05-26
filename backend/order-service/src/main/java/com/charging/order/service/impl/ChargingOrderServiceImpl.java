@@ -10,6 +10,7 @@ import com.charging.order.entity.ChargingSession;
 import com.charging.order.mapper.ChargingOrderMapper;
 import com.charging.order.mapper.ChargingSessionMapper;
 import com.charging.order.service.ChargingOrderService;
+import com.charging.user.client.UserClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -29,6 +30,9 @@ public class ChargingOrderServiceImpl implements ChargingOrderService {
 
     @Resource
     private ChargingSessionMapper chargingSessionMapper;
+
+    @Resource(required = false)
+    private UserClient userClient;
 
     private static final BigDecimal DEFAULT_ELECTRICITY_PRICE = new BigDecimal("1.0");
     private static final BigDecimal DEFAULT_SERVICE_PRICE = new BigDecimal("0.5");
@@ -223,6 +227,10 @@ public class ChargingOrderServiceImpl implements ChargingOrderService {
             }
             
             CHARGING_PROGRESS_CACHE.remove(orderId);
+            
+            if (order.getUserId() != null && order.getFinalAmount() != null && order.getFinalAmount().compareTo(BigDecimal.ZERO) > 0) {
+                rewardOrderPoints(order.getUserId(), order.getFinalAmount(), order.getOrderNumber());
+            }
         }
         
         return result > 0;
@@ -386,7 +394,26 @@ public class ChargingOrderServiceImpl implements ChargingOrderService {
     }
 
     private BigDecimal calculateMembershipDiscount(Long userId, BigDecimal amount) {
-        return BigDecimal.ZERO;
+        if (userClient == null) {
+            return BigDecimal.ZERO;
+        }
+        try {
+            return userClient.calculateMembershipDiscount(userId, amount);
+        } catch (Exception e) {
+            return BigDecimal.ZERO;
+        }
+    }
+
+    private void rewardOrderPoints(Long userId, BigDecimal amount, String orderNumber) {
+        if (userClient == null) {
+            return;
+        }
+        try {
+            Integer points = amount.setScale(0, BigDecimal.ROUND_DOWN).intValue();
+            userClient.addPoints(userId, points, "充电奖励", orderNumber);
+        } catch (Exception e) {
+            log.warn("奖励积分失败：{}", e.getMessage());
+        }
     }
 
     private BigDecimal calculatePowerConsumed(Integer durationMinutes, Long pileId) {
