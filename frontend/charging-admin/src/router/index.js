@@ -90,6 +90,20 @@ const routes = [
         meta: { title: '退款审核' }
       }
     ]
+  },
+  {
+    path: '/coupon',
+    component: Layout,
+    redirect: '/coupon/list',
+  meta: { title: '优惠券管理', icon: 'coupon' },
+    children: [
+      {
+        path: 'list',
+        name: 'CouponList',
+        component: () => import('@/views/coupon/list.vue'),
+        meta: { title: '优惠券发放' }
+      }
+    ]
   }
 ]
 
