@@ -1,0 +1,36 @@
+<view class="container">
+  <view class="header">
+    <view class="location" bindtap="chooseLocation">
+      <text class="icon">📍</text>
+      <text>{{locationName || '点击选择位置'}}</text>
+    </view>
+  </view>
+
+  <view class="map-container">
+    <map
+      id="map"
+      class="map"
+      latitude="{{latitude}}"
+      longitude="{{longitude}}"
+      scale="16"
+      markers="{{markers}}"
+      show-location="true"
+      bindmarkertap="onMarkerTap"
+    ></map>
+  </view>
+
+  <view class="pile-list">
+    <view class="section-title">附近充电桩</view>
+    <view class="pile-item" wx:for="{{piles}}" wx:key="pileId" bindtap="onPileTap" data-item="{{item}}">
+      <view class="pile-info">
+        <text class="pile-name">{{item.pileName}}</text>
+        <text class="pile-address">{{item.locationName}}</text>
+        <view class="pile-tags">
+          <text class="tag">{{item.powerType}}</text>
+          <text class="tag available">可用 {{item.totalSlots}} 个</text>
+        </view>
+      </view>
+      <view class="pile-distance">{{item.distance || '0.5'}}km</view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,107 @@
+<view class="container">
+  <view class="pile-header">
+    <text class="pile-name">{{pileInfo.pileName || '充电站'}}</text>
+    <view class="status-tag status-{{pileInfo.status}}">
+      {{statusText}}
+    </view>
+  </view>
+  
+  <view class="info-section">
+    <view class="info-row">
+      <text class="info-label">地址</text>
+      <text class="info-value">{{pileInfo.address || '未知地址'}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">距离</text>
+      <text class="info-value">{{pileInfo.distance || '-'}} km</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">电价</text>
+      <text class="info-value">¥{{unitPrice}}/kWh</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">可用槽位</text>
+      <text class="info-value">{{availableSlots}}/{{totalSlots}}</text>
+    </view>
+  </view>
+  
+  <view class="slots-section" wx:if="{{slots.length > 0}}">
+    <text class="section-title">充电槽位</text>
+    <view class="slots-grid">
+      <view 
+        class="slot-item slot-{{slot.status}}"
+        wx:for="{{slots}}"
+        wx:key="slotId"
+        bindtap="selectSlot"
+        data-slot="{{item}}"
+      >
+        <text class="slot-number">{{item.slotName}}</text>
+        <text class="slot-status">{{slotStatusText[item.status]}}</text>
+      </view>
+    </view>
+  </view>
+  
+  <view class="selected-info" wx:if="{{selectedSlot}}">
+    <text class="selected-label">已选择</text>
+    <text class="selected-value">{{selectedSlot.slotName}}</text>
+  </view>
+  
+  <view class="charging-options" wx:if="{{selectedSlot}}">
+    <view class="option-item">
+      <text class="option-label">充电模式</text>
+      <picker 
+        mode="selector" 
+        range="{{chargingModes}}" 
+        value="{{chargingModeIndex}}"
+        bindchange="onChargingModeChange"
+      >
+        <view class="picker-value">
+          {{chargingModes[chargingModeIndex]}}
+        </view>
+      </picker>
+    </view>
+    
+    <view class="option-item">
+      <text class="option-label">目标电量</text>
+      <slider 
+        min="0" 
+        max="100" 
+        step="5" 
+        value="{{targetSoc}}"
+        show-value
+        bindchange="onTargetSocChange"
+      />
+    </view>
+  </view>
+  
+  <view class="coupon-section" wx:if="{{coupons.length > 0}}">
+    <text class="section-title">可用优惠券</text>
+    <view class="coupon-list">
+      <view 
+        class="coupon-item {{selectedCoupon ? 'disabled' : ''}}"
+        wx:for="{{coupons}}"
+        wx:key="couponId"
+        bindtap="selectCoupon"
+        data-coupon="{{item}}"
+      >
+        <view class="coupon-left">
+          <text class="coupon-amount">¥{{item.amount}}</text>
+          <text class="coupon-condition">满{{item.threshold}}可用</text>
+        </view>
+        <view class="coupon-right">
+          <text class="coupon-name">{{item.name}}</text>
+          <text class="coupon-expire">有效期至 {{item.expireTime}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  
+  <view class="action-buttons">
+    <button class="start-btn" bindtap="startCharging" wx:if="{{selectedSlot}}">
+      开始充电
+    </button>
+    <button class="cancel-btn" bindtap="selectSlot" wx:if="{{selectedSlot}}">
+      重新选择
+    </button>
+  </view>
+</view>

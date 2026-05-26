@@ -1,0 +1,19 @@
+spring:
+  application:
+    name: coupon-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+        group: charging-platform
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:localhost:8848}
+        file-extension: yaml
+        namespace: ${NACOS_NAMESPACE:dev}
+        group: charging-platform
+
+server:
+  port: 8086
+  servlet:
+    context-path: /api/coupon

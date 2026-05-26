@@ -1,0 +1,63 @@
+<view class="container">
+  <view class="charging-card">
+    <view class="status-header">
+      <text class="status-icon">⚡</text>
+      <text class="status-text">{{statusText}}</text>
+    </view>
+    
+    <view class="progress-section">
+      <view class="soc-display">
+        <text class="soc-value">{{progress.currentSoc || 0}}</text>
+        <text class="soc-unit">%</text>
+      </view>
+      <view class="soc-label">当前电量</view>
+      <view class="soc-bar">
+        <view class="soc-bar-fill" style="width: {{progress.currentSoc || 0}}%"></view>
+      </view>
+      <view class="target-soc">目标：{{progress.targetSoc || 100}}%</view>
+    </view>
+    
+    <view class="info-grid">
+      <view class="info-item">
+        <text class="info-label">充电时长</text>
+        <text class="info-value">{{formatTime(progress.elapsedMinutes || 0)}}</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">已充电量</text>
+        <text class="info-value">{{progress.powerConsumed || 0}} kWh</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">当前功率</text>
+        <text class="info-value">{{progress.currentPower || 0}} kW</text>
+      </view>
+      <view class="info-item">
+        <text class="info-label">当前金额</text>
+        <text class="info-value">¥{{(progress.currentAmount || 0).toFixed(2)}}</text>
+      </view>
+    </view>
+    
+    <view class="battery-info" wx:if="{{progress.batteryTemp}}">
+      <view class="info-row">
+        <text class="info-label">电池温度</text>
+        <text class="info-value">{{progress.batteryTemp}}°C</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">电压</text>
+        <text class="info-value">{{progress.currentVoltage || 0}} V</text>
+      </view>
+      <view class="info-row">
+        <text class="info-label">电流</text>
+        <text class="info-value">{{progress.currentCurrent || 0}} A</text>
+      </view>
+    </view>
+    
+    <view class="estimated-info" wx:if="{{progress.estimatedEndTime}}">
+      <text class="info-label">预计完成时间</text>
+      <text class="info-value">{{formatTime2(progress.estimatedEndTime)}}</text>
+    </view>
+  </view>
+  
+  <view class="action-buttons">
+    <button class="stop-btn" bindtap="stopCharging">停止充电</button>
+  </view>
+</view>
