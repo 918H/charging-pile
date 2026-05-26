@@ -1,144 +1,117 @@
 .container {
-  min-height: 100vh;
-  background: #f5f5f5;
-  padding: 20rpx;
+  padding: 24rpx;
+}
+
+.order-item {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E9ECEF;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16rpx;
+}
+
+.order-no {
+  font-size: 24rpx;
+  color: #ADB5BD;
+}
+
+.order-status {
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.status-0 { color: #FAA935; }
+.status-1 { color: #4DABF7; }
+.status-2 { color: #0CA678; }
+.status-3 { color: #ADB5BD; }
+
+.pile-name {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #343A40;
+  margin-bottom: 12rpx;
+}
+
+.order-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 24rpx;
+  color: #868E96;
+}
+
+.order-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 16rpx;
+  padding-top: 16rpx;
+  border-top: 1rpx solid #F1F3F5;
+}
+
+.order-amount {
+  font-size: 30rpx;
+  font-weight: 500;
+  color: #FA5252;
+}
+
+.order-actions {
+  display: flex;
+  gap: 12rpx;
+}
+
+.order-actions button {
+  font-size: 24rpx;
+  padding: 12rpx 24rpx;
+  border-radius: 6rpx;
+}
+
+.btn-cancel {
+  background: #FFFFFF;
+  color: #495057;
+  border: 1rpx solid #E9ECEF;
+}
+
+.btn-pay {
+  background: #FAA935;
+  color: #FFFFFF;
+}
+
+.btn-review {
+  background: #0CA678;
+  color: #FFFFFF;
+}
+
+.btn-detail {
+  background: #4DABF7;
+  color: #FFFFFF;
 }
 
 .tabs {
   display: flex;
-  background: #fff;
-  border-radius: 10rpx;
-  margin-bottom: 20rpx;
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E9ECEF;
   overflow: hidden;
 }
 
 .tab {
   flex: 1;
   text-align: center;
-  padding: 30rpx 0;
-  font-size: 28rpx;
-  color: #666;
-  border-bottom: 4rpx solid transparent;
+  padding: 24rpx 0;
+  font-size: 26rpx;
+  color: #868E96;
+  border-bottom: 3rpx solid transparent;
 }
 
 .tab.active {
-  color: #07c160;
-  border-bottom-color: #07c160;
-  font-weight: bold;
-}
-
-.order-item,
-.reservation-item {
-  background: #fff;
-  border-radius: 10rpx;
-  margin-bottom: 20rpx;
-  overflow: hidden;
-}
-
-.order-header,
-.reservation-header {
-  display: flex;
-  justify-content: space-between;
-  padding: 20rpx;
-  border-bottom: 1rpx solid #eee;
-}
-
-.order-no,
-.reservation-no {
-  font-size: 26rpx;
-  color: #666;
-}
-
-.order-status,
-.reservation-status {
-  font-size: 26rpx;
-  font-weight: bold;
-}
-
-.status-0 { color: #f57c00; }
-.status-1 { color: #409EFF; }
-.status-2 { color: #4caf50; }
-.status-3 { color: #999; }
-
-.order-body,
-.reservation-body {
-  padding: 20rpx;
-}
-
-.pile-name {
-  font-size: 30rpx;
-  font-weight: bold;
-  margin-bottom: 10rpx;
-}
-
-.order-info,
-.reservation-info {
-  display: flex;
-  justify-content: space-between;
-  font-size: 26rpx;
-  color: #666;
-  margin-bottom: 10rpx;
-}
-
-.reservation-fee {
-  font-size: 26rpx;
-  color: #f44336;
-  font-weight: bold;
-  margin-top: 10rpx;
-}
-
-.order-footer,
-.reservation-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20rpx;
-  border-top: 1rpx solid #eee;
-}
-
-.order-amount {
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #f44336;
-}
-
-.order-actions,
-.reservation-actions {
-  display: flex;
-  gap: 20rpx;
-}
-
-.order-actions button,
-.reservation-actions button {
-  font-size: 26rpx;
-  padding: 10rpx 30rpx;
-  border-radius: 6rpx;
-}
-
-.btn-cancel {
-  background: #fff;
-  color: #666;
-  border: 1rpx solid #ddd;
-}
-
-.btn-pay {
-  background: #f57c00;
-  color: #fff;
-}
-
-.btn-review {
-  background: #07c160;
-  color: #fff;
-}
-
-.btn-detail {
-  background: #409EFF;
-  color: #fff;
-}
-
-.empty {
-  text-align: center;
-  padding: 100rpx 0;
-  color: #999;
-  font-size: 28rpx;
+  color: #4DABF7;
+  border-bottom-color: #4DABF7;
+  font-weight: 500;
 }

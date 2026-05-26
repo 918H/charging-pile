@@ -1,177 +1,121 @@
 .container {
-  padding: 30rpx;
-  background: #f5f5f5;
-  min-height: 100vh;
+  padding: 24rpx;
 }
 
 .charging-card {
-  background: white;
-  border-radius: 20rpx;
-  padding: 40rpx;
-  margin-bottom: 30rpx;
-  box-shadow: 0 4rpx 12rpx rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E9ECEF;
 }
 
 .status-header {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 40rpx;
-}
-
-.status-icon {
-  font-size: 48rpx;
-  margin-right: 20rpx;
-  animation: pulse 1.5s infinite;
+  margin-bottom: 32rpx;
 }
 
 .status-text {
-  font-size: 36rpx;
-  font-weight: bold;
-  color: #07c160;
-}
-
-@keyframes pulse {
-  0%, 100% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.6;
-  }
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #0CA678;
 }
 
 .progress-section {
   text-align: center;
-  margin-bottom: 40rpx;
+  margin-bottom: 32rpx;
 }
 
 .soc-display {
   display: flex;
   align-items: baseline;
   justify-content: center;
+  margin-bottom: 16rpx;
 }
 
 .soc-value {
-  font-size: 96rpx;
-  font-weight: bold;
-  color: #07c160;
+  font-size: 80rpx;
+  font-weight: 300;
+  color: #0CA678;
 }
 
 .soc-unit {
-  font-size: 32rpx;
-  color: #666;
-  margin-left: 10rpx;
+  font-size: 28rpx;
+  color: #ADB5BD;
+  margin-left: 8rpx;
 }
 
 .soc-label {
-  font-size: 28rpx;
-  color: #666;
-  margin: 20rpx 0;
+  font-size: 26rpx;
+  color: #868E96;
+  margin-bottom: 16rpx;
 }
 
 .soc-bar {
   width: 100%;
-  height: 20rpx;
-  background: #e5e5e5;
-  border-radius: 10rpx;
+  height: 12rpx;
+  background: #E9ECEF;
+  border-radius: 6rpx;
   overflow: hidden;
-  margin-bottom: 20rpx;
+  margin-bottom: 12rpx;
 }
 
 .soc-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #07c160, #10aeff);
-  border-radius: 10rpx;
-  transition: width 0.3s ease;
+  background: #4DABF7;
+  border-radius: 6rpx;
 }
 
 .target-soc {
   font-size: 24rpx;
-  color: #999;
+  color: #ADB5BD;
 }
 
 .info-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 30rpx;
-  margin-bottom: 30rpx;
+  gap: 16rpx;
+  margin-bottom: 16rpx;
 }
 
 .info-item {
   text-align: center;
-  padding: 20rpx;
-  background: #f9f9f9;
-  border-radius: 12rpx;
+  padding: 16rpx;
+  background: #F8F9FA;
+  border-radius: 8rpx;
 }
 
 .info-label {
   display: block;
   font-size: 24rpx;
-  color: #666;
-  margin-bottom: 10rpx;
+  color: #868E96;
+  margin-bottom: 8rpx;
 }
 
 .info-value {
   display: block;
-  font-size: 32rpx;
-  font-weight: bold;
-  color: #333;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #495057;
 }
 
 .battery-info {
-  border-top: 1rpx solid #e5e5e5;
-  padding-top: 30rpx;
-}
-
-.info-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 15rpx 0;
-}
-
-.info-row .info-label {
-  font-size: 26rpx;
-  color: #666;
-  margin: 0;
-}
-
-.info-row .info-value {
-  font-size: 28rpx;
-  color: #333;
-}
-
-.estimated-info {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 20rpx;
-  border-top: 1rpx solid #e5e5e5;
-  margin-top: 20rpx;
-}
-
-.estimated-info .info-label {
-  font-size: 26rpx;
-  color: #666;
-  margin: 0;
-}
-
-.estimated-info .info-value {
-  font-size: 28rpx;
-  color: #07c160;
+  border-top: 1rpx solid #E9ECEF;
+  padding-top: 16rpx;
+  margin-top: 16rpx;
 }
 
 .action-buttons {
-  margin-top: 40rpx;
+  margin-top: 32rpx;
 }
 
 .stop-btn {
-  background: #ff4d4f;
-  color: white;
-  font-size: 32rpx;
-  padding: 30rpx;
-  border-radius: 12rpx;
+  background: #FA5252;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  padding: 24rpx;
+  border-radius: 8rpx;
   border: none;
-}
-
-.stop-btn:active {
-  background: #ff7875;
 }
