@@ -2,6 +2,7 @@ package com.charging.user.controller;
 
 import com.charging.user.common.Result;
 import com.charging.user.dto.MembershipDTO;
+import com.charging.user.dto.MembershipDiscountDTO;
 import com.charging.user.entity.UserMembership;
 import com.charging.user.service.MembershipService;
 import io.swagger.annotations.Api;
@@ -9,6 +10,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Api(tags = "会员管理")
@@ -35,12 +37,39 @@ public class MembershipController {
 
     @GetMapping("/user/discount")
     @ApiOperation("计算会员折扣")
-    public Result<Object> calculateDiscount(
+    public Result<MembershipDiscountDTO> calculateDiscount(
             @RequestParam Long userId,
             @RequestParam BigDecimal amount
     ) {
-        BigDecimal discount = membershipService.calculateDiscount(userId, amount);
-        return Result.success(discount);
+        MembershipDiscountDTO dto = new MembershipDiscountDTO();
+        dto.setUserId(userId);
+        dto.setOriginalAmount(amount);
+        
+        UserMembership membership = membershipService.getUserMembership(userId);
+        if (membership != null) {
+            dto.setLevelCode(membership.getLevelCode());
+            
+            List<MembershipDTO> levels = membershipService.getMembershipLevels();
+            for (MembershipDTO level : levels) {
+                if (level.getLevelCode().equals(membership.getLevelCode())) {
+                    dto.setLevelName(level.getLevelName());
+                    dto.setDiscountRate(level.getDiscountRate());
+                    break;
+                }
+            }
+            
+            BigDecimal discountAmount = membershipService.calculateDiscount(userId, amount);
+            dto.setDiscountAmount(discountAmount);
+            dto.setFinalAmount(amount.subtract(discountAmount));
+        } else {
+            dto.setLevelCode(0);
+            dto.setLevelName("普通会员");
+            dto.setDiscountRate(BigDecimal.ONE);
+            dto.setDiscountAmount(BigDecimal.ZERO);
+            dto.setFinalAmount(amount);
+        }
+        
+        return Result.success(dto);
     }
 
     @PostMapping("/user/upgrade")

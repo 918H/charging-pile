@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 @FeignClient(name = "user-service", contextId = "userClient")
 public interface UserClient {
 
-    @GetMapping("/membership/user/discount")
+    @GetMapping("/membership/user/discount-detail")
     BigDecimal calculateMembershipDiscount(@RequestParam("userId") Long userId, @RequestParam("amount") BigDecimal amount);
 
     @PostMapping("/points/add")
