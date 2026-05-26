@@ -2,7 +2,9 @@ package com.charging.payment.service.impl;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.charging.payment.dto.PaymentRequest;
+import com.charging.payment.dto.PaymentResponse;
 import com.charging.payment.entity.PaymentRecord;
 import com.charging.payment.mapper.PaymentRecordMapper;
 import com.charging.payment.service.PaymentService;
@@ -18,49 +20,106 @@ public class PaymentServiceImpl implements PaymentService {
     private PaymentRecordMapper paymentRecordMapper;
 
     @Override
-    public PaymentRecord createPayment(PaymentRequest request) {
-        PaymentRecord record = new PaymentRecord();
-        record.setOrderId(request.getOrderId());
-        record.setAmount(request.getAmount());
-        record.setPaymentMethod(request.getPaymentMethod());
-        record.setStatus(0);
-        record.setPaymentNumber(generatePaymentNumber());
-        record.setCreatedAt(LocalDateTime.now());
-        record.setUpdatedAt(LocalDateTime.now());
+    public PaymentResponse createPayment(PaymentRequest request) {
+        PaymentResponse response = new PaymentResponse();
         
-        paymentRecordMapper.insert(record);
-        return record;
+        try {
+            LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(PaymentRecord::getOrderNumber, request.getOrderNumber());
+            PaymentRecord existingPayment = paymentRecordMapper.selectOne(wrapper);
+            
+            if (existingPayment != null && existingPayment.getPaymentStatus() == 1) {
+                response.setSuccess(false);
+                response.setMessage("订单已支付");
+                return response;
+            }
+            
+            String paymentNumber = generatePaymentNumber();
+            String transactionId = request.getTransactionId() != null 
+                ? request.getTransactionId() 
+                : "WX" + IdUtil.getSnowflakeNextIdStr();
+            
+            int paymentStatus = request.getPaymentStatus() != null 
+                ? request.getPaymentStatus() 
+                : 1;
+            
+            if (existingPayment != null) {
+                existingPayment.setPaymentNumber(paymentNumber);
+                existingPayment.setTransactionId(transactionId);
+                existingPayment.setPaymentMethod(request.getPaymentMethod());
+                existingPayment.setPaymentTime(LocalDateTime.now());
+                existingPayment.setPaymentStatus(paymentStatus);
+                existingPayment.setRemarks(request.getRemarks());
+                existingPayment.setUpdatedAt(LocalDateTime.now());
+                
+                paymentRecordMapper.updateById(existingPayment);
+                
+                response.setSuccess(true);
+                response.setPaymentId(existingPayment.getPaymentId());
+                response.setPaymentNumber(paymentNumber);
+                response.setTransactionId(transactionId);
+                response.setMessage("支付成功");
+            } else {
+                PaymentRecord payment = new PaymentRecord();
+                payment.setPaymentNumber(paymentNumber);
+                payment.setOrderNumber(request.getOrderNumber());
+                payment.setUserId(request.getUserId());
+                payment.setAmount(request.getAmount());
+                payment.setPaymentMethod(request.getPaymentMethod());
+                payment.setTransactionId(transactionId);
+                payment.setPaymentTime(LocalDateTime.now());
+                payment.setPaymentStatus(paymentStatus);
+                payment.setRefundStatus(0);
+                payment.setRemarks(request.getRemarks());
+                payment.setCreatedAt(LocalDateTime.now());
+                payment.setUpdatedAt(LocalDateTime.now());
+                
+                paymentRecordMapper.insert(payment);
+                
+                response.setSuccess(true);
+                response.setPaymentId(payment.getPaymentId());
+                response.setPaymentNumber(paymentNumber);
+                response.setTransactionId(transactionId);
+                response.setMessage("支付成功");
+            }
+            
+        } catch (Exception e) {
+            response.setSuccess(false);
+            response.setMessage("支付失败：" + e.getMessage());
+        }
+        
+        return response;
     }
 
     @Override
-    public PaymentRecord queryPayment(Long paymentId) {
-        return paymentRecordMapper.selectById(paymentId);
+    public boolean verifyPayment(String orderNumber, String transactionId) {
+        LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PaymentRecord::getOrderNumber, orderNumber)
+               .eq(PaymentRecord::getTransactionId, transactionId)
+               .eq(PaymentRecord::getPaymentStatus, 1);
+        
+        long count = paymentRecordMapper.selectCount(wrapper);
+        return count > 0;
     }
 
     @Override
-    public boolean refund(Long paymentId, String reason) {
-        PaymentRecord record = paymentRecordMapper.selectById(paymentId);
-        if (record == null || record.getStatus() != 1) {
+    public boolean updatePaymentStatus(String orderNumber, int status) {
+        LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PaymentRecord::getOrderNumber, orderNumber);
+        
+        PaymentRecord payment = paymentRecordMapper.selectOne(wrapper);
+        if (payment == null) {
             return false;
         }
-        record.setStatus(2);
-        record.setUpdatedAt(LocalDateTime.now());
-        return paymentRecordMapper.updateById(record) > 0;
-    }
-
-    @Override
-    public void handleNotify(String transactionId, String outTradeNo) {
-        PaymentRecord record = paymentRecordMapper.selectByOutTradeNo(outTradeNo);
-        if (record != null && record.getStatus() == 0) {
-            record.setStatus(1);
-            record.setThirdPartyId(transactionId);
-            record.setPaidAt(LocalDateTime.now());
-            paymentRecordMapper.updateById(record);
-        }
+        
+        payment.setPaymentStatus(status);
+        payment.setUpdatedAt(LocalDateTime.now());
+        
+        return paymentRecordMapper.updateById(payment) > 0;
     }
 
     private String generatePaymentNumber() {
-        return "PAY" + DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss") + 
+        return "PAY" + DateUtil.format(DateUtil.date(), "yyyyMMddHHmmss") +
                IdUtil.getSnowflakeNextIdStr();
     }
 }

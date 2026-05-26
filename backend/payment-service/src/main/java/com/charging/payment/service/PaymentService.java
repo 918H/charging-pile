@@ -1,11 +1,10 @@
 package com.charging.payment.service;
 
 import com.charging.payment.dto.PaymentRequest;
-import com.charging.payment.entity.PaymentRecord;
+import com.charging.payment.dto.PaymentResponse;
 
 public interface PaymentService {
-    PaymentRecord createPayment(PaymentRequest request);
-    PaymentRecord queryPayment(Long paymentId);
-    boolean refund(Long paymentId, String reason);
-    void handleNotify(String transactionId, String outTradeNo);
+    PaymentResponse createPayment(PaymentRequest request);
+    boolean verifyPayment(String orderNumber, String transactionId);
+    boolean updatePaymentStatus(String orderNumber, int status);
 }

@@ -19,8 +19,23 @@ public class PaymentRecordServiceImpl implements PaymentRecordService {
     private PaymentRecordMapper paymentRecordMapper;
 
     @Override
-    public PaymentRecord getById(Long paymentId) {
-        return paymentRecordMapper.selectById(paymentId);
+    public List<PaymentRecord> getList(Long userId, Integer status) {
+        LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
+        if (userId != null) {
+            wrapper.eq(PaymentRecord::getUserId, userId);
+        }
+        if (status != null) {
+            wrapper.eq(PaymentRecord::getPaymentStatus, status);
+        }
+        wrapper.orderByDesc(PaymentRecord::getCreatedAt);
+        return paymentRecordMapper.selectList(wrapper);
+    }
+
+    @Override
+    public PaymentRecord getByOrderNumber(String orderNumber) {
+        LambdaQueryWrapper<PaymentRecord> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(PaymentRecord::getOrderNumber, orderNumber);
+        return paymentRecordMapper.selectOne(wrapper);
     }
 
     @Override
