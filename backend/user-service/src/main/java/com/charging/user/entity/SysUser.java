@@ -35,6 +35,15 @@ public class SysUser implements Serializable {
     @TableField("status")
     private Integer status;
 
+    @TableField("total_spending")
+    private java.math.BigDecimal totalSpending;
+
+    @TableField("membership_level")
+    private Integer membershipLevel;
+
+    @TableField("points")
+    private Integer points;
+
     @TableField(value = "created_at", fill = FieldFill.INSERT)
     private LocalDateTime createdAt;
 

@@ -185,12 +185,23 @@ public class ChargingOrderServiceImpl implements ChargingOrderService {
         BigDecimal totalAmount = electricityFee.add(serviceFee);
         order.setTotalAmount(totalAmount);
         
-        if (order.getDiscountAmount() != null) {
-            order.setFinalAmount(totalAmount.subtract(order.getDiscountAmount()).max(BigDecimal.ZERO));
-        } else {
-            order.setFinalAmount(totalAmount);
+        BigDecimal membershipDiscount = BigDecimal.ZERO;
+        if (order.getUserId() != null) {
+            membershipDiscount = calculateMembershipDiscount(order.getUserId(), totalAmount);
         }
         
+        BigDecimal couponDiscount = BigDecimal.ZERO;
+        if (order.getCouponId() != null) {
+            couponDiscount = calculateDiscount(order.getCouponId(), totalAmount);
+        }
+        
+        BigDecimal totalDiscount = membershipDiscount.add(couponDiscount);
+        
+        if (totalDiscount.compareTo(BigDecimal.ZERO) > 0) {
+            order.setDiscountAmount(totalDiscount);
+        }
+        
+        order.setFinalAmount(totalAmount.subtract(totalDiscount).max(BigDecimal.ZERO));
         order.setPaymentStatus(0);
         order.setUpdatedAt(now);
         
@@ -371,6 +382,10 @@ public class ChargingOrderServiceImpl implements ChargingOrderService {
         if (couponId == null) {
             return BigDecimal.ZERO;
         }
+        return BigDecimal.ZERO;
+    }
+
+    private BigDecimal calculateMembershipDiscount(Long userId, BigDecimal amount) {
         return BigDecimal.ZERO;
     }
 
