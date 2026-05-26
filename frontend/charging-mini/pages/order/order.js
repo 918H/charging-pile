@@ -155,5 +155,29 @@ Page({
     wx.navigateTo({
       url: `/pages/reservation/detail?reservationId=${reservationId}`
     });
+  },
+
+  async canReview(orderId) {
+    try {
+      const orderApi = require('../../api/order');
+      const result = await orderApi.canReview(app.globalData.userId, orderId);
+      return result;
+    } catch (err) {
+      console.error('Check can review error:', err);
+      return false;
+    }
+  },
+
+  async goToReview(e) {
+    const orderId = e.currentTarget.dataset.id;
+    
+    const canReview = await this.canReview(orderId);
+    if (canReview) {
+      wx.navigateTo({
+        url: `/pages/review/review?orderId=${orderId}`
+      });
+    } else {
+      wx.showToast({ title: '您已评价过该订单', icon: 'none' });
+    }
   }
 });

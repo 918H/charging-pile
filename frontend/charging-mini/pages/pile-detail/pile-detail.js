@@ -15,6 +15,7 @@ Page({
     availableSlots: 0,
     totalSlots: 0,
     statusText: '未知',
+    pileRating: {},
     slotStatusText: ['空闲', '可用', '使用中', '故障']
   },
 
@@ -24,6 +25,7 @@ Page({
       this.loadPileDetail();
       this.loadPilePrice();
       this.loadUserCoupons();
+      this.loadPileRating();
     }
   },
 
@@ -38,6 +40,7 @@ Page({
       });
       
       this.loadSlots();
+      this.loadPileRating();
     } catch (err) {
       console.error('Load pile detail error:', err);
       wx.showToast({ title: '加载失败', icon: 'none' });
@@ -77,8 +80,24 @@ Page({
       const coupons = await couponApi.getUserCoupons(app.globalData.userId);
       this.setData({ coupons });
     } catch (err) {
-      console.error('Load coupons error:', err);
+        console.error('Load coupons error:', err);
     }
+  },
+
+  async loadPileRating() {
+    try {
+      const orderApi = require('../../api/order');
+      const rating = await orderApi.getPileRating(this.data.pileId);
+      this.setData({ pileRating: rating });
+    } catch (err) {
+      console.error('Load pile rating error:', err);
+    }
+  },
+
+  goToFaultReport() {
+    wx.navigateTo({
+      url: `/pages/fault-report/fault-report?pileId=${this.data.pileId}`
+    });
   },
 
   selectSlot(e) {

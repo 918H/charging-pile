@@ -126,6 +126,11 @@
   color: #fff;
 }
 
+.btn-review {
+  background: #07c160;
+  color: #fff;
+}
+
 .btn-detail {
   background: #409EFF;
   color: #fff;

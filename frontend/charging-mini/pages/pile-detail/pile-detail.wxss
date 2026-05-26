@@ -245,6 +245,20 @@
   margin-top: 40rpx;
 }
 
+.report-btn {
+  background: #ff6b00;
+  color: white;
+  font-size: 32rpx;
+  padding: 25rpx;
+  border-radius: 12rpx;
+  border: none;
+  margin-bottom: 20rpx;
+}
+
+.report-btn:active {
+  background: #e65c00;
+}
+
 .start-btn {
   background: #07c160;
   color: white;

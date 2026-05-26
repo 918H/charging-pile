@@ -23,6 +23,10 @@
       <text class="info-label">可用槽位</text>
       <text class="info-value">{{availableSlots}}/{{totalSlots}}</text>
     </view>
+    <view class="info-row" wx:if="{{pileRating.averageRating}}">
+      <text class="info-label">评分</text>
+      <text class="info-value">⭐{{pileRating.averageRating}} ({{pileRating.totalReviews}}条评价)</text>
+    </view>
   </view>
   
   <view class="slots-section" wx:if="{{slots.length > 0}}">
@@ -97,6 +101,7 @@
   </view>
   
   <view class="action-buttons">
+    <button class="report-btn" bindtap="goToFaultReport">故障上报</button>
     <button class="start-btn" bindtap="startCharging" wx:if="{{selectedSlot}}">
       开始充电
     </button>

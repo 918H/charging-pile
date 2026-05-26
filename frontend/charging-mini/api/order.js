@@ -194,5 +194,55 @@ module.exports = {
       data: { pileId, slotId, startTime, endTime },
       token
     });
+  },
+
+  createReview(data) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/review/create',
+      method: 'POST',
+      data,
+      token
+    });
+  },
+
+  getPileReviews(pileId, limit = 10) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/review/pile/list',
+      method: 'GET',
+      data: { pileId, limit },
+      token
+    });
+  },
+
+  getUserReviews(userId) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/review/user/list',
+      method: 'GET',
+      data: { userId },
+      token
+    });
+  },
+
+  getPileRating(pileId) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/review/pile/rating',
+      method: 'GET',
+      data: { pileId },
+      token
+    });
+  },
+
+  canReview(userId, orderId) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/review/can-review',
+      method: 'GET',
+      data: { userId, orderId },
+      token
+    });
   }
 };

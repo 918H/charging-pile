@@ -19,11 +19,12 @@
         </view>
       </view>
       
-      <view class="order-footer">
+        <view class="order-footer">
         <text class="order-amount">¥{{item.totalAmount}}</text>
         <view class="order-actions">
           <button wx:if="{{item.status === 0}}" class="btn-cancel" bindtap="cancelOrder" data-id="{{item.orderId}}">取消订单</button>
           <button wx:if="{{item.status === 0}}" class="btn-pay" bindtap="payOrder" data-id="{{item.orderId}}">立即支付</button>
+          <button wx:if="{{item.status === 2}}" class="btn-review" bindtap="goToReview" data-id="{{item.orderId}}">评价</button>
           <button class="btn-detail" bindtap="viewDetail" data-id="{{item.orderId}}">查看详情</button>
         </view>
       </view>

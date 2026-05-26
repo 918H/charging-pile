@@ -1,0 +1,72 @@
+<view class="container">
+  <view class="order-info">
+    <text class="info-title">订单信息</text>
+    <view class="info-row">
+      <text class="info-label">充电站</text>
+      <text class="info-value">{{orderInfo.pileName}}</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">充电量</text>
+      <text class="info-value">{{orderInfo.powerConsumed}} kWh</text>
+    </view>
+    <view class="info-row">
+      <text class="info-label">充电时长</text>
+      <text class="info-value">{{orderInfo.durationMinutes}} 分钟</text>
+    </view>
+  </view>
+
+  <view class="rating-section">
+    <text class="section-title">整体评分</text>
+    <view class="rating-stars">
+      <text 
+        class="star {{index < rating ? 'active' : ''}}"
+        wx:for="{{[0,1,2,3,4]}}"
+        wx:key="index"
+        bindtap="selectRating"
+        data-rating="{{index + 1}}"
+      >
+        {{index < rating ? '⭐' : '☆'}}
+      </text>
+      <text class="rating-text">{{ratingText}}</text>
+    </view>
+  </view>
+
+  <view class="tags-section">
+    <text class="section-title">选择标签 (可选)</text>
+    <view class="tags-list">
+      <view 
+        class="tag {{selectedTags.includes(item) ? 'active' : ''}}"
+        wx:for="{{tags}}"
+        wx:key="*this"
+        bindtap="selectTag"
+        data-tag="{{item}}"
+      >
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="comment-section">
+    <text class="section-title">详细评价 (可选)</text>
+    <textarea 
+      class="comment-input"
+      placeholder="分享您的充电体验..."
+      maxlength="200"
+      value="{{comment}}"
+      bindinput="onCommentInput"
+    />
+    <text class="char-count">{{comment.length}}/200</text>
+  </view>
+
+  <view class="image-section" wx:if="{{false}}">
+    <text class="section-title">上传图片 (可选)</text>
+    <view class="image-upload" bindtap="chooseImage">
+      <text class="upload-icon">+</text>
+      <text class="upload-text">上传图片</text>
+    </view>
+  </view>
+
+  <view class="action-buttons">
+    <button class="submit-btn" bindtap="submitReview">提交评价</button>
+  </view>
+</view>
