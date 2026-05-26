@@ -1,0 +1,65 @@
+server:
+  port: 8081
+  servlet:
+    context-path: /api/user
+
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+jwt:
+  secret: ${JWT_SECRET:charging-platform-secret-key-2024-very-long-string-for-security-min-32-chars}
+  expiration: 3600
+  refreshExpiration: 604800
+  tokenHeader: Authorization
+  tokenPrefix: "Bearer "
+
+security:
+  password:
+    min-length: 8
+    max-length: 20
+    require-upper-case: true
+    require-lower-case: true
+    require-digit: true
+    require-special-char: true
+  login:
+    max-attempts: 5
+    lock-duration-minutes: 30
+
+logging:
+  level:
+    root: INFO
+    com.charging.user: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"
+  file:
+    name: logs/user-service.log
+    max-size: 100MB
+    max-history: 30
+    total-size-cap: 3GB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  health:
+    redis:
+      enabled: true
+    mysql:
+      enabled: true

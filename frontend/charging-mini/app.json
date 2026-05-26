@@ -1,0 +1,18 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/charging/charging",
+    "pages/order/order",
+    "pages/profile/profile"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#409EFF",
+    "navigationBarTitleText": "充电桩小程序",
+    "navigationBarTextStyle": "white"
+  },
+  "sitemap": {
+    "path": "sitemap.json"
+  },
+  "style": "v2"
+}

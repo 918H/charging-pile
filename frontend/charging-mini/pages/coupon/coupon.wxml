@@ -1,0 +1,26 @@
+<view class="container">
+  <view class="coupon-list">
+    <view class="coupon-item" wx:for="{{coupons}}" wx:key="userCouponId">
+      <view class="coupon-left" style="border-left-color: {{item.couponType === 1 ? '#ff6b6b' : '#409EFF'}}">
+        <text class="coupon-amount">{{item.couponType === 2 ? (item.discountAmount * 10) + '折' : '¥' + item.discountAmount}}</text>
+      </view>
+      <view class="coupon-right">
+        <view class="coupon-header">
+          <text class="coupon-name">{{item.couponName}}</text>
+          <text class="coupon-status status-{{item.status}}">{{item.statusText}}</text>
+        </view>
+        <view class="coupon-info">
+          <text wx:if="{{item.couponType === 1}}">满{{item.minPurchaseAmount}}元可用</text>
+          <text wx:if="{{item.couponType === 2}}">满{{item.minPurchaseAmount}}元可用</text>
+          <text wx:if="{{item.couponType === 3}}">无门槛使用</text>
+        </view>
+        <view class="coupon-time">有效期至：{{item.endTime}}</view>
+        <button wx:if="{{item.couponId}}" class="btn-receive" bindtap="receiveCoupon" data-id="{{item.couponId}}">立即领取</button>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{coupons.length === 0}}">
+    <text>暂无优惠券</text>
+  </view>
+</view>

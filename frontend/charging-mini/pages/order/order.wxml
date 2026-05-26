@@ -1,0 +1,31 @@
+<view class="container">
+  <view class="order-list">
+    <view class="order-item" wx:for="{{orders}}" wx:key="orderId">
+      <view class="order-header">
+        <text class="order-no">订单号：{{item.orderNumber}}</text>
+        <text class="order-status status-{{item.status}}">{{item.statusText}}</text>
+      </view>
+      
+      <view class="order-body">
+        <view class="pile-name">{{item.pileName}}</view>
+        <view class="order-info">
+          <text>充电时长：{{item.durationMinutes}}分钟</text>
+          <text>充电度数：{{item.powerConsumed}}度</text>
+        </view>
+      </view>
+      
+      <view class="order-footer">
+        <text class="order-amount">¥{{item.totalAmount}}</text>
+        <view class="order-actions">
+          <button wx:if="{{item.status === 0}}" class="btn-cancel" bindtap="cancelOrder" data-id="{{item.orderId}}">取消订单</button>
+          <button wx:if="{{item.status === 0}}" class="btn-pay" bindtap="payOrder" data-id="{{item.orderId}}">立即支付</button>
+          <button class="btn-detail" bindtap="viewDetail" data-id="{{item.orderId}}">查看详情</button>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="empty" wx:if="{{orders.length === 0}}">
+    <text>暂无订单</text>
+  </view>
+</view>
