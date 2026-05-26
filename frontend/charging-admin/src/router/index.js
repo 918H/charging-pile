@@ -76,6 +76,20 @@ const routes = [
         meta: { title: '预约列表' }
       }
     ]
+  },
+  {
+    path: '/refund',
+    component: Layout,
+    redirect: '/refund/list',
+  meta: { title: '退款管理', icon: 'refund' },
+    children: [
+      {
+        path: 'list',
+        name: 'RefundList',
+        component: () => import('@/views/refund/list.vue'),
+        meta: { title: '退款审核' }
+      }
+    ]
   }
 ]
 

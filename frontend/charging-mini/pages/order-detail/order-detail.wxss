@@ -1,0 +1,122 @@
+.container {
+  padding: 24rpx;
+}
+
+.status-card {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 40rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E9ECEF;
+  text-align: center;
+}
+
+.status-icon {
+  font-size: 80rpx;
+  margin-bottom: 16rpx;
+}
+
+.status-text {
+  font-size: 32rpx;
+  font-weight: 500;
+  color: #343A40;
+}
+
+.info-section,
+.price-section,
+.time-section {
+  background: #FFFFFF;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  margin-bottom: 16rpx;
+  border: 1rpx solid #E9ECEF;
+}
+
+.section-title {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 16rpx;
+}
+
+.info-row,
+.price-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 12rpx 0;
+}
+
+.info-label,
+.price-label {
+  font-size: 26rpx;
+  color: #868E96;
+}
+
+.info-value,
+.price-value {
+  font-size: 26rpx;
+  color: #495057;
+}
+
+.text-primary {
+  color: #4DABF7;
+  font-weight: 500;
+}
+
+.text-success {
+  color: #0CA678;
+}
+
+.divider {
+  height: 1rpx;
+  background: #E9ECEF;
+  margin: 8rpx 0;
+}
+
+.price-row.total {
+  padding-top: 16rpx;
+}
+
+.action-buttons {
+  margin-top: 32rpx;
+}
+
+.btn-pay {
+  background: #FAA935;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  border: none;
+  margin-bottom: 12rpx;
+}
+
+.btn-cancel {
+  background: #F8F9FA;
+  color: #495057;
+  font-size: 28rpx;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #E9ECEF;
+  margin-bottom: 12rpx;
+}
+
+.btn-review {
+  background: #0CA678;
+  color: #FFFFFF;
+  font-size: 28rpx;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  border: none;
+  margin-bottom: 12rpx;
+}
+
+.btn-refund {
+  background: #F8F9FA;
+  color: #495057;
+  font-size: 28rpx;
+  padding: 24rpx;
+  border-radius: 8rpx;
+  border: 1rpx solid #E9ECEF;
+}
