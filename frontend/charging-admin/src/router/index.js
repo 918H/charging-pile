@@ -62,6 +62,20 @@ const routes = [
         meta: { title: '用户列表' }
       }
     ]
+  },
+  {
+    path: '/reservation',
+    component: Layout,
+    redirect: '/reservation/list',
+  meta: { title: '预约管理', icon: 'reservation' },
+    children: [
+      {
+        path: 'list',
+        name: 'ReservationList',
+        component: () => import('@/views/reservation/list.vue'),
+        meta: { title: '预约列表' }
+      }
+    ]
   }
 ]
 

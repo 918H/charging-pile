@@ -145,5 +145,54 @@ module.exports = {
       data: { pileId, fullTime, leaveTime },
       token
     });
+  },
+
+  createReservation(data) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/reservation/create',
+      method: 'POST',
+      data,
+      token
+    });
+  },
+
+  cancelReservation(reservationId, reason = '用户取消') {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: `/api/order/reservation/${reservationId}/cancel`,
+      method: 'POST',
+      data: { reason },
+      token
+    });
+  },
+
+  getReservationDetail(reservationId) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: `/api/order/reservation/${reservationId}`,
+      method: 'GET',
+      token
+    });
+  },
+
+  getUserReservations(userId, status = null) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/reservation/user/list',
+      method: 'GET',
+      data: { userId, status },
+      token
+    });
+  },
+
+  checkAvailability(pileId, slotId, startTime, endTime) {
+    const token = wx.getStorageSync('token');
+    return request({
+      url: '/api/order/reservation/check',
+      method: 'GET',
+      data: { pileId, slotId, startTime, endTime },
+      token
+    });
   }
 };

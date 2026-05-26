@@ -1,0 +1,90 @@
+<view class="container">
+  <view class="date-selector">
+    <text class="section-title">选择日期</text>
+    <picker mode="date" value="{{selectedDate}}" start="{{today}}" bindchange="onDateChange">
+      <view class="picker-value">
+        {{selectedDate || '请选择日期'}}
+      </view>
+    </picker>
+  </view>
+
+  <view class="time-slots" wx:if="{{selectedDate}}">
+    <text class="section-title">选择时段 ({{selectedDate}})</text>
+    <view class="slots-grid">
+      <view 
+        class="time-slot {{slot.available ? 'available' : 'unavailable'}} {{selectedSlot === index ? 'selected' : ''}}"
+        wx:for="{{timeSlots}}"
+        wx:key="index"
+        data-index="{{index}}"
+        bindtap="selectTimeSlot"
+      >
+        <text class="time-text">{{slot.startTime}}-{{slot.endTime}}</text>
+        <text class="status-text">{{slot.available ? '可预约' : '已约满'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <view class="pile-info" wx:if="{{selectedDate && selectedSlot !== null}}">
+    <text class="section-title">选择充电桩</text>
+    <view class="pile-list">
+      <view 
+        class="pile-item {{selectedPile === index ? 'selected' : ''}}"
+        wx:for="{{piles}}"
+        wx:key="pileId"
+        data-index="{{index}}"
+        bindtap="selectPile"
+      >
+        <view class="pile-header">
+          <text class="pile-name">{{item.pileName}}</text>
+          <text class="pile-status">可用槽位：{{item.availableSlots}}/{{item.totalSlots}}</text>
+        </view>
+        <view class="pile-info-row">
+          <text class="info-label">地址:</text>
+          <text class="info-value">{{item.address}}</text>
+        </view>
+        <view class="pile-info-row">
+          <text class="info-label">电价:</text>
+          <text class="info-value">¥{{item.unitPrice}}/kWh</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="duration-selector" wx:if="{{selectedPile !== null}}">
+    <text class="section-title">预约时长</text>
+    <slider 
+      min="30" 
+      max="180" 
+      step="30" 
+      value="{{durationMinutes}}"
+      show-value
+      bindchange="onDurationChange"
+    />
+  </view>
+
+  <view class="summary-card" wx:if="{{selectedPile !== null && selectedSlot !== null}}">
+    <text class="section-title">预约摘要</text>
+    <view class="summary-row">
+      <text class="summary-label">充电时间</text>
+      <text class="summary-value">{{selectedDate}} {{timeSlots[selectedSlot].startTime}} - {{timeSlots[selectedSlot].endTime}}</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">充电站</text>
+      <text class="summary-value">{{piles[selectedPile].pileName}}</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">预约时长</text>
+      <text class="summary-value">{{durationMinutes}} 分钟</text>
+    </view>
+    <view class="summary-row">
+      <text class="summary-label">预估费用</text>
+      <text class="summary-value">¥{{estimatedFee}}</text>
+    </view>
+  </view>
+
+  <view class="action-buttons">
+    <button class="submit-btn" bindtap="createReservation" wx:if="{{selectedPile !== null && selectedSlot !== null}}">
+      确认预约
+    </button>
+  </view>
+</view>

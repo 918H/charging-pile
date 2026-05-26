@@ -1,18 +1,50 @@
 {
   "pages": [
     "pages/index/index",
+    "pages/pile-detail/pile-detail",
     "pages/charging/charging",
     "pages/order/order",
-    "pages/profile/profile"
+    "pages/profile/profile",
+    "pages/coupon/coupon",
+    "pages/reservation/reservation"
   ],
   "window": {
     "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#409EFF",
-    "navigationBarTitleText": "充电桩小程序",
-    "navigationBarTextStyle": "white"
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "充电桩",
+    "navigationBarTextStyle": "black"
   },
-  "sitemap": {
-    "path": "sitemap.json"
+  "tabBar": {
+    "color": "#999",
+    "selectedColor": "#07c160",
+    "backgroundColor": "#fff",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/images/home.png",
+        "selectedIconPath": "/images/home-active.png"
+      },
+      {
+        "pagePath": "pages/reservation/reservation",
+        "text": "预约",
+        "iconPath": "/images/reservation.png",
+        "selectedIconPath": "/images/reservation-active.png"
+      },
+      {
+        "pagePath": "pages/order/order",
+        "text": "订单",
+        "iconPath": "/images/order.png",
+        "selectedIconPath": "/images/order-active.png"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的",
+        "iconPath": "/images/profile.png",
+        "selectedIconPath": "/images/profile-active.png"
+      }
+    ]
   },
-  "style": "v2"
+  "style": "v2",
+  "sitemapLocation": "sitemap.json"
 }

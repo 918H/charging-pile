@@ -4,26 +4,53 @@
   padding: 20rpx;
 }
 
-.order-item {
+.tabs {
+  display: flex;
   background: #fff;
   border-radius: 10rpx;
   margin-bottom: 20rpx;
   overflow: hidden;
 }
 
-.order-header {
+.tab {
+  flex: 1;
+  text-align: center;
+  padding: 30rpx 0;
+  font-size: 28rpx;
+  color: #666;
+  border-bottom: 4rpx solid transparent;
+}
+
+.tab.active {
+  color: #07c160;
+  border-bottom-color: #07c160;
+  font-weight: bold;
+}
+
+.order-item,
+.reservation-item {
+  background: #fff;
+  border-radius: 10rpx;
+  margin-bottom: 20rpx;
+  overflow: hidden;
+}
+
+.order-header,
+.reservation-header {
   display: flex;
   justify-content: space-between;
   padding: 20rpx;
   border-bottom: 1rpx solid #eee;
 }
 
-.order-no {
+.order-no,
+.reservation-no {
   font-size: 26rpx;
   color: #666;
 }
 
-.order-status {
+.order-status,
+.reservation-status {
   font-size: 26rpx;
   font-weight: bold;
 }
@@ -33,7 +60,8 @@
 .status-2 { color: #4caf50; }
 .status-3 { color: #999; }
 
-.order-body {
+.order-body,
+.reservation-body {
   padding: 20rpx;
 }
 
@@ -43,14 +71,24 @@
   margin-bottom: 10rpx;
 }
 
-.order-info {
+.order-info,
+.reservation-info {
   display: flex;
   justify-content: space-between;
   font-size: 26rpx;
   color: #666;
+  margin-bottom: 10rpx;
 }
 
-.order-footer {
+.reservation-fee {
+  font-size: 26rpx;
+  color: #f44336;
+  font-weight: bold;
+  margin-top: 10rpx;
+}
+
+.order-footer,
+.reservation-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -64,12 +102,14 @@
   color: #f44336;
 }
 
-.order-actions {
+.order-actions,
+.reservation-actions {
   display: flex;
   gap: 20rpx;
 }
 
-.order-actions button {
+.order-actions button,
+.reservation-actions button {
   font-size: 26rpx;
   padding: 10rpx 30rpx;
   border-radius: 6rpx;
