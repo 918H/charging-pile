@@ -10,7 +10,7 @@ import com.charging.order.entity.ChargingSession;
 import com.charging.order.mapper.ChargingOrderMapper;
 import com.charging.order.mapper.ChargingSessionMapper;
 import com.charging.order.service.ChargingOrderService;
-import com.charging.user.client.UserClient;
+import com.charging.order.client.UserClient;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
