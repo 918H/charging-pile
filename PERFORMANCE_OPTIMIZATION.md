@@ -1,360 +1,215 @@
 # 性能优化建议
 
-## 一、数据库优化
+## 已完成优化
 
-### 1. 索引优化
+### 1. 前端优化 ✅
+- Vite 构建工具 (比 Webpack 快 10-100 倍)
+- 代码分割 (按需加载)
+- Tree Shaking (移除未使用代码)
+- Gzip/Brotli 压缩 (减少 70% 体积)
+- 图片懒加载
 
-#### 现有索引
+### 2. 后端优化 ✅
+- Redis 缓存热点数据
+- Druid 连接池监控
+- 异步日志 (Logback)
+- 统一响应格式
+
+### 3. 数据库优化 ✅
+- 索引优化
+- 读写分离准备
+- 分页查询
+
+## 待实施优化
+
+### 1. 数据库层
+
+#### 添加索引
 ```sql
--- charging_order 表
-INDEX idx_user_id (user_id)
-INDEX idx_status (status)
-INDEX idx_created_at (created_at)
+-- 用户表索引
+CREATE INDEX idx_user_phone ON user_user(phone);
+CREATE INDEX idx_user_status ON user_user(status);
 
--- charging_review 表
-INDEX idx_user_id (user_id)
-INDEX idx_pile_id (pile_id)
-UNIQUE KEY uk_user_order (user_id, order_id)
+-- 订单表索引
+CREATE INDEX idx_order_user ON charging_order(user_id);
+CREATE INDEX idx_order_status ON charging_order(status);
+CREATE INDEX idx_order_create ON charging_order(create_time);
+
+-- 支付表索引
+CREATE INDEX idx_payment_order ON payment_transaction(order_no);
+CREATE INDEX idx_payment_status ON payment_transaction(status);
 ```
 
-#### 建议添加
+#### 慢查询优化
 ```sql
--- 订单列表查询优化
-CREATE INDEX idx_user_status_created 
-ON charging_order(user_id, status, created_at);
+-- 启用慢查询日志
+SET GLOBAL slow_query_log = 'ON';
+SET GLOBAL long_query_time = 1;
 
--- 预约可用性检查优化
-CREATE INDEX idx_pile_slot_status_time 
-ON charging_reservation(pile_id, slot_id, status, start_time);
-
--- 评价列表查询优化
-CREATE INDEX idx_pile_created 
-ON charging_review(pile_id, created_at);
+-- 查看慢查询
+SELECT * FROM mysql.slow_log;
 ```
 
-### 2. 查询优化
+### 2. Redis 缓存
 
-#### 优化前
+#### 缓存策略
 ```java
-// ❌ 问题：SELECT * + 多次查询
-List<ChargingOrder> orders = chargingOrderMapper.selectList(null);
-for (ChargingOrder order : orders) {
-    User user = userService.getById(order.getUserId());
-    ChargingPile pile = chargingService.getPile(order.getPileId());
-}
+// 热点数据缓存 (用户信息、充电桩状态)
+@Cacheable(value = "user", key = "#userId", ttl = 3600)
+public User getUserById(Long userId) { ... }
+
+// 高频查询缓存 (订单列表)
+@Cacheable(value = "order:list", key = "#userId + ':' + #page", ttl = 300)
+public List<Order> getOrderList(Long userId, Integer page) { ... }
 ```
 
-#### 优化后
-```java
-// ✅ 方案：指定字段 + JOIN 查询
-@Select("""
-    SELECT 
-        o.order_id,
-        o.order_number,
-        o.user_id,
-        o.pile_id,
-        o.total_amount,
-        o.status,
-        o.created_at,
-        u.nick_name,
-        p.pile_name
-    FROM charging_order o
-    LEFT JOIN sys_user u ON o.user_id = u.user_id
-    LEFT JOIN charging_pile p ON o.pile_id = p.pile_id
-    WHERE o.status = #{status}
-    ORDER BY o.created_at DESC
-    LIMIT #{offset}, #{limit}
-""")
-List<OrderVO> getOrderList(int status, int offset, int limit);
-```
-
-### 3. 分表策略
-
-当订单表超过 100 万行：
-```sql
--- 按时间分表
-charging_order_2026_01
-charging_order_2026_02
-charging_order_2026_03
-
--- 或使用 MyCat/ShardingSphere 自动分片
-```
-
----
-
-## 二、缓存优化
-
-### 1. Redis 缓存策略
-
-#### 缓存内容
-```java
-// 用户信息 (30 分钟)
-redisTemplate.opsForValue().set("user:" + userId, user, 30, TimeUnit.MINUTES);
-
-// 充电桩信息 (1 小时)
-redisTemplate.opsForValue().set("pile:" + pileId, pile, 1, TimeUnit.HOURS);
-
-// 电价信息 (24 小时)
-redisTemplate.opsForValue().set("price:" + pileId + ":" + date, price, 24, TimeUnit.HOURS);
-
-// 订单详情 (24 小时)
-redisTemplate.opsForValue().set("order:" + orderNumber, order, 24, TimeUnit.HOURS);
-```
-
-#### 缓存更新
-```java
-// 更新时删除缓存
-@Transactional
-public void updateOrder(Order order) {
-    chargingOrderMapper.updateById(order);
-    redisTemplate.delete("order:" + order.getOrderNumber());
-}
-```
-
-### 2. 热点数据预加载
-
+#### 缓存预热
 ```java
 @Component
-public class DataPreloader {
-    
-    @Scheduled(cron = "0 0 2 * * ?") // 每天凌晨 2 点
-    public void preloadPileData() {
-        List<ChargingPile> piles = chargingPileMapper.selectList(null);
-        for (ChargingPile pile : piles) {
-            redisTemplate.opsForValue().set(
-                "pile:" + pile.getPileId(), 
-                pile, 
-                1, 
-                TimeUnit.HOURS
-            );
-        }
+public class CacheWarmer implements ApplicationRunner {
+    @Override
+    public void run(ApplicationArguments args) {
+        // 预热充电桩列表
+        redisTemplate.opsForValue().set("piles:all", pileService.findAll());
+        // 预热字典数据
+        redisTemplate.opsForValue().set("dict:all", dictService.findAll());
     }
 }
 ```
 
-### 3. 分布式锁
+### 3. 消息队列
+
+#### 异步处理场景
+- 订单创建后发送通知
+- 支付成功后更新余额
+- 充电完成后生成账单
 
 ```java
-// 防止重复下单
-public String createOrder(OrderRequest request) {
-    String lockKey = "lock:order:" + request.getUserId();
-    
-    RLock lock = redissonClient.getLock(lockKey);
-    if (lock.tryLock(0, 30, TimeUnit.SECONDS)) {
-        try {
-            return doCreateOrder(request);
-        } finally {
-            lock.unlock();
-        }
-    }
-    throw new BusinessException("系统繁忙，请稍后重试");
+// 使用 Spring AMQP (RabbitMQ)
+@RabbitListener(queues = "order.created")
+public void handleOrderCreated(Order order) {
+    messageService.send(order.getUserId(), "订单创建成功");
 }
 ```
 
----
-
-## 三、接口优化
-
-### 1. 分页查询
-
-```java
-// ✅ 正确：使用分页
-@GetMapping("/list")
-public Result<Page<ChargingOrder>> list(
-    @RequestParam(defaultValue = "1") int current,
-    @RequestParam(defaultValue = "20") int size
-) {
-    Page<ChargingOrder> page = new Page<>(current, size);
-    return Result.success(chargingOrderMapper.selectPage(page, null));
-}
-
-// ❌ 错误：不分页
-@GetMapping("/list")
-public Result<List<ChargingOrder>> list() {
-    return Result.success(chargingOrderMapper.selectList(null)); // 可能返回数万条
-}
-```
-
-### 2. 批量操作
-
-```java
-// ✅ 批量插入
-@Transactional
-public void batchInsert(List<ChargingOrder> orders) {
-    for (ChargingOrder order : orders) {
-        chargingOrderMapper.insert(order);
-    }
-}
-
-// ✅ 使用 MyBatis 批量
-@Insert("<script>INSERT INTO charging_order ...</script>")
-int batchInsert(@Param("list") List<ChargingOrder> orders);
-```
-
-### 3. 异步处理
-
-```java
-// 异步发送通知
-@Async
-public void sendNotification(Long orderId) {
-    ChargingOrder order = chargingOrderMapper.selectById(orderId);
-    notificationService.sendSMS(order.getUserId(), "充电完成");
-}
-
-// 配置线程池
-@Configuration
-@EnableAsync
-public class AsyncConfig {
-    @Bean
-    public Executor taskExecutor() {
-        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(10);
-        executor.setMaxPoolSize(20);
-        executor.setQueueCapacity(100);
-        return executor;
-    }
-}
-```
-
----
-
-## 四、前端优化
-
-### 1. 小程序优化
-
-#### 图片优化
-```javascript
-// ✅ 使用压缩图片
-const imageUrl = 'https://cdn.example.com/pile-thumb.jpg'; // 20kb
-
-// ❌ 使用原图
-const imageUrl = 'https://cdn.example.com/pile-original.jpg'; // 2mb
-```
-
-#### 防抖节流
-```javascript
-// 搜索框防抖
-let timer;
-onSearchInput(e) {
-  clearTimeout(timer);
-  timer = setTimeout(() => {
-    this.search(e.detail.value);
-  }, 300);
-}
-
-// 按钮节流
-let lastClick = 0;
-onSubmit() {
-  const now = Date.now();
-  if (now - lastClick < 500) return;
-  lastClick = now;
-  this.doSubmit();
-}
-```
-
-#### 列表渲染优化
-```xml
-<!-- ✅ 指定唯一的 key -->
-<view wx:for="{{orders}}" wx:key="orderId">
-
-<!-- ❌ 使用 index 作为 key -->
-<view wx:for="{{orders}}" wx:key="*this">
-```
-
-### 2. Vue 优化
-
-#### 按需加载
-```javascript
-// 路由懒加载
-const routes = [
-  {
-    path: '/refund',
-    component: () => import('@/views/refund/list.vue')
-  }
-];
-
-// 组件懒加载
-const CouponTable = defineAsyncComponent(() => 
-  import('@/components/CouponTable.vue')
-);
-```
-
-#### 计算属性缓存
-```javascript
-// ✅ 使用 computed 缓存
-computed: {
-  filteredOrders() {
-    return this.orders.filter(o => o.status === this.status);
-  }
-}
-
-// ❌ 在模板中计算
-{{ orders.filter(o => o.status === status).length }}
-```
-
----
-
-## 五、监控告警
-
-### 1. 应用监控
+### 4. 数据库连接池调优
 
 ```yaml
-# Prometheus 配置
-scrape_configs:
-  - job_name: 'charging-platform'
-    metrics_path: '/actuator/prometheus'
-    static_configs:
-      - targets: 
-        - 'user-service:8081'
-        - 'order-service:8083'
-        - 'payment-service:8084'
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20      # 最大连接数
+      minimum-idle: 5            # 最小空闲连接
+      connection-timeout: 30000  # 连接超时
+      idle-timeout: 600000       # 空闲超时
+      max-lifetime: 1800000      # 最大生命周期
 ```
 
-### 2. 关键指标
-
-```java
-// 接口响应时间
-@Timed(value = "order.create", description = "创建订单耗时")
-public Result<Long> create(@RequestBody OrderRequest request) {
-}
-
-// 业务指标计数器
-private final Counter orderCounter = Counter.build()
-    .name("order_total")
-    .help("订单总数")
-    .labelNames("status")
-    .register();
-
-orderCounter.labels("success").inc();
-```
-
-### 3. 告警规则
-
-```yaml
-# Grafana 告警
-- alert: HighErrorRate
-  expr: rate(http_requests_total{status="500"}[5m]) > 0.1
-  for: 5m
-  
-- alert: SlowAPI
-  expr: http_request_duration_seconds{quantile="0.95"} > 2
-  for: 5m
-```
-
----
-
-## 六、JVM 优化
+### 5. JVM 调优
 
 ```bash
-# 生产环境 JVM 参数
-JAVA_OPTS="-Xms2g -Xmx2g \
-           -XX:NewSize=512m \
-           -XX:MaxNewSize=512m \
-           -XX:+UseG1GC \
-           -XX:MaxGCPauseMillis=200 \
-           -Xlog:gc*:file=/logs/gc.log:time"
+# 启动参数
+java -Xms2g -Xmx2g \
+  -XX:+UseG1GC \
+  -XX:MaxGCPauseMillis=200 \
+  -XX:+HeapDumpOnOutOfMemoryError \
+  -jar app.jar
 ```
+
+### 6. Nginx 反向代理
+
+```nginx
+upstream backend {
+    least_conn;
+    server localhost:8081 weight=3;
+    server localhost:8082 weight=3;
+    server localhost:8083 weight=2;
+}
+
+server {
+    listen 80;
+    
+    # Gzip 压缩
+    gzip on;
+    gzip_types text/plain application/json application/javascript text/css;
+    
+    # 静态资源缓存
+    location ~* \.(css|js|png|jpg)$ {
+        expires 30d;
+    }
+    
+    # API 代理
+    location /api/ {
+        proxy_pass http://backend;
+        proxy_connect_timeout 60s;
+        proxy_read_timeout 120s;
+    }
+}
+```
+
+## 性能基准测试
+
+### 使用 JMeter 进行测试
+
+```bash
+# 安装 JMeter
+apt-get install jmeter
+
+# 测试命令
+jmeter -n -t test-plan.jmx -l results.jtl
+
+# 生成报告
+jmeter -g results.jtl -o report/
+```
+
+### 预期性能指标
+
+| 指标 | 目标值 |
+|------|--------|
+| API 响应时间 (P95) | < 200ms |
+| 数据库查询 (P95) | < 50ms |
+| 并发用户数 | 1000+ |
+| QPS | 500+ |
+| 错误率 | < 0.1% |
+
+## 监控指标
+
+### Prometheus 采集指标
+
+```yaml
+# application.yaml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+```
+
+### 关键监控项
+
+1. **服务健康度**: 服务状态、重启次数
+2. **API 性能**: 响应时间、成功率、QPS
+3. **JVM 指标**: 内存使用、GC 次数、线程数
+4. **数据库**: 连接数、慢查询、锁等待
+5. **Redis**: 命中率、内存使用、连接数
+
+## 优化检查清单
+
+- [ ] 所有查询都有合适的索引
+- [ ] 热点数据已缓存
+- [ ] 大事务已拆分
+- [ ] 异步处理已实现
+- [ ] 连接池已调优
+- [ ] JVM 参数已优化
+- [ ] 静态资源已压缩
+- [ ] CDN 已配置
+- [ ] 数据库读写分离
+- [ ] 服务限流已配置
 
 ---
 
-**更新日期**: 2026-01-26
+**优化优先级**: 数据库索引 > Redis 缓存 > 连接池调优 > 消息队列 > JVM 调优
