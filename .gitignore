@@ -1,84 +1,40 @@
-# Maven
-target/
-pom.xml.tag
-pom.xml.releaseBackup
-pom.xml.versionsBackup
-pom.xml.next
-release.properties
-dependency-reduced-pom.xml
-buildNumber.properties
-.mvn/timing.properties
-.mvn/wrapper/maven-wrapper.jar
+# 环境配置文件（包含敏感信息）
+.env
+docker/.env
+*.local.env
 
-# Gradle
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
-!**/src/main/**/build/
-!**/src/test/**/build/
-
-# IntelliJ IDEA
-.idea/
-*.iws
-*.iml
-*.ipr
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
-
-# Visual Studio Code
-.vscode/
-
-# NetBeans
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-
-# Eclipse
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
-bin/
-!**/src/main/**/bin/
-!**/src/test/**/bin/
-
-# Mac
-.DS_Store
-
-# Log files
-*.log
+# 日志文件
 logs/
+*.log
+npm-debug.log*
 
-# Database
-*.db
-*.sqlite
-*.sqlite3
+# 构建输出
+dist/
+target/
+build/
+*.jar
+*.war
 
-# Node.js (for frontend)
+# IDE 配置
+.idea/
+.vscode/
+*.iml
+*.swp
+*.swo
+
+# Node.js
 node_modules/
 npm-debug.log
 yarn-error.log
 
-# Frontend build
-dist/
-build/
+# Maven
+.mvn/wrapper/maven-wrapper.jar
 
-# Environment
-.env
-.env.local
-.env.*.local
+# Operating System
+.DS_Store
+Thumbs.db
 
-# Docker
-docker-compose.override.yml
-
-# Temp files
-*.tmp
-*.bak
-*.swp
-*~
+# Temporary files
+tmp/
+temp/
+.tmp/
