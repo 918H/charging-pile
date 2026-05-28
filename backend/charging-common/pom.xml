@@ -8,17 +8,43 @@
         <groupId>com.charging</groupId>
         <artifactId>charging-pile</artifactId>
         <version>1.0.0</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>charging-common</artifactId>
     <packaging>pom</packaging>
     <name>charging-common</name>
-    <description>公共模块</description>
+    <description>公共模块聚合</description>
 
     <modules>
         <module>charging-common-core</module>
         <module>charging-common-redis</module>
         <module>charging-common-db</module>
     </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.charging</groupId>
+                <artifactId>charging-common-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.charging</groupId>
+                <artifactId>charging-common-redis</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.charging</groupId>
+                <artifactId>charging-common-db</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <!-- Sentinel 依赖管理 -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+                <version>2021.0.6.1</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 </project>
