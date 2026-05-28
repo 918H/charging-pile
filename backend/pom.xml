@@ -1,0 +1,8 @@
+
+    <!-- 新增功能服务模块 -->
+    <module>statistics-service</module>
+    <module>message-service</module>
+    <module>support-service</module>
+    <module>marketing-service</module>
+    <module>finance-service</module>
+    <module>monitor-service</module>
