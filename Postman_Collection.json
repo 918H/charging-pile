@@ -1,0 +1,121 @@
+{
+  "info": {
+    "name": "充电桩管理平台 API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {"key": "baseUrl", "value": "http://localhost:8080"},
+    {"key": "token", "value": ""}
+  ],
+  "item": [
+    {
+      "name": "用户服务",
+      "item": [
+        {
+          "name": "用户注册",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}:8081/user/register",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "username", "value": "testuser"},
+                {"key": "password", "value": "123456"},
+                {"key": "phone", "value": "13800138000"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "用户登录",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}:8081/user/login",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "username", "value": "testuser"},
+                {"key": "password", "value": "123456"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "获取用户信息",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}:8081/user/profile?userId=1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "充电服务",
+      "item": [
+        {
+          "name": "开始充电",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}:8082/charging/start",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [
+                {"key": "userId", "value": "1"},
+                {"key": "pileId", "value": "1"}
+              ]
+            }
+          }
+        },
+        {
+          "name": "停止充电",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}:8082/charging/stop",
+            "body": {
+              "mode": "urlencoded",
+              "urlencoded": [{"key": "orderId", "value": "1"}]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "数据统计",
+      "item": [
+        {
+          "name": "仪表盘数据",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}:8087/statistics/dashboard"
+          }
+        },
+        {
+          "name": "日统计列表",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}:8087/statistics/daily?startDate=2026-05-01&endDate=2026-05-28"
+          }
+        }
+      ]
+    },
+    {
+      "name": "设备监控",
+      "item": [
+        {
+          "name": "所有充电桩状态",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}:8092/monitor/piles/status"
+          }
+        },
+        {
+          "name": "告警列表",
+          "request": {
+            "method": "GET",
+            "url": "{{baseUrl}}:8092/monitor/alarm/list"
+          }
+        }
+      ]
+    }
+  ]
+}
