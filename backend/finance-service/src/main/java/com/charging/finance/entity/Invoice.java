@@ -4,14 +4,15 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 @Data
-@TableName("finance_transaction")
-public class FinanceTransaction {
+@TableName("invoice")
+public class Invoice {
     @TableId(type = IdType.AUTO) private Long id;
     private Long userId;
-    private String type;
+    private String invoiceNo;
     private BigDecimal amount;
+    private String type;
+    private String title;
+    private String taxId;
     private String status;
-    private String description;
-    private String orderNo;
     private LocalDateTime createTime;
 }

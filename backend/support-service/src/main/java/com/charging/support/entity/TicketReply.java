@@ -3,17 +3,12 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import java.time.LocalDateTime;
 @Data
-@TableName("support_ticket")
-public class SupportTicket {
+@TableName("ticket_reply")
+public class TicketReply {
     @TableId(type = IdType.AUTO) private Long id;
-    private String ticketNo;
+    private Long ticketId;
     private Long userId;
-    private String type;
     private String content;
-    private String images;
-    private String status;
-    private String priority;
-    private Long handlerId;
+    private Integer type;
     private LocalDateTime createTime;
-    private LocalDateTime updateTime;
 }
