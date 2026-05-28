@@ -2,8 +2,8 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import path from 'path'
 
-// 从.env 文件读取环境变量
-const SERVER_HOST = process.env.VITE_SERVER_HOST || 'localhost'
+// 统一使用固定 IP: 192.168.56.180
+const SERVER_HOST = '192.168.56.180'
 
 export default defineConfig({
   plugins: [vue()],
