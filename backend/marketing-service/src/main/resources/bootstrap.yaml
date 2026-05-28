@@ -1,0 +1,6 @@
+spring:
+  application: { name: marketing-service }
+  cloud:
+    nacos:
+      discovery: { server-addr: ${NACOS_SERVER_ADDR:192.168.56.180:8848} }
+      config: { server-addr: ${NACOS_SERVER_ADDR:192.168.56.180:8848}, file-extension: yaml }
