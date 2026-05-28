@@ -1,0 +1,74 @@
+# Sentinel 流量控制配置模板
+# 在应用 bootstrap.yaml 中引用
+
+spring:
+  cloud:
+    sentinel:
+      # 启用 Sentinel
+      enabled: true
+      
+      # 控制台配置
+      transport:
+        dashboard:
+          # Sentinel Dashboard 地址
+          server-addr: ${SENTINEL_DASHBOARD:localhost:8080}
+        # 心跳间隔（ms）
+        heartbeat-interval-ms: 10000
+        # API 端口（-1 表示自动选择）
+        port: ${SENTINEL_API_PORT:8719}
+      
+      # 流控规则
+      flow:
+        rules:
+          # 全局限流
+          - resource: "/api/**"
+            limit-app: default
+            grade: 1  # QPS 模式
+            count: 100
+            strategy: 0  # 直接
+            control-behavior: 0  # 快速失败
+          # 订单创建限流
+          - resource: "POST:/api/order/create"
+            limit-app: default
+            grade: 1
+            count: 50
+            strategy: 0
+            control-behavior: 2  # 排队等待
+            max-queueing-time-ms: 500
+          # 用户登录限流
+          - resource: "POST:/api/auth/login"
+            limit-app: default
+            grade: 1
+            count: 20
+            strategy: 0
+            control-behavior: 0
+      
+      # 降级规则
+      degrade:
+        rules:
+          # 响应时间降级
+          - resource: "/api/**"
+            count: 500  # 平均响应时间 500ms
+            time-window: 60  # 降级时长 60 秒
+            grade: 0
+          # 异常比例降级
+          - resource: "GET:/api/user/profile"
+            count: 0.5  # 异常比例 50%
+            time-window: 30
+            grade: 1
+            min-request-amount: 10
+      
+      # 系统自适应保护
+      system:
+        rules:
+          - highest-system-cpu: 0.7  # CPU 使用率 70%
+            highest-system-load: 2.5  # 系统负载 2.5
+            qps: 100  # 总 QPS 限制
+      
+      # 热点参数限流
+      param-flow:
+        rules:
+          - resource: "GET:/api/charging/pile/{pileId}"
+            count: 10
+            grade: 1
+            param-index: 0  # 第一个参数
