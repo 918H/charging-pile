@@ -1,0 +1,52 @@
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: 'nacos'
+    static_configs:
+      - targets: ['nacos:8848']
+
+  - job_name: 'user-service'
+    static_configs:
+      - targets: ['user-service:8081']
+
+  - job_name: 'charging-service'
+    static_configs:
+      - targets: ['charging-service:8082']
+
+  - job_name: 'order-service'
+    static_configs:
+      - targets: ['order-service:8083']
+
+  - job_name: 'payment-service'
+    static_configs:
+      - targets: ['payment-service:8084']
+
+  - job_name: 'coupon-service'
+    static_configs:
+      - targets: ['coupon-service:8085']
+
+  - job_name: 'statistics-service'
+    static_configs:
+      - targets: ['statistics-service:8087']
+
+  - job_name: 'message-service'
+    static_configs:
+      - targets: ['message-service:8088']
+
+  - job_name: 'support-service'
+    static_configs:
+      - targets: ['support-service:8089']
+
+  - job_name: 'marketing-service'
+    static_configs:
+      - targets: ['marketing-service:8090']
+
+  - job_name: 'finance-service'
+    static_configs:
+      - targets: ['finance-service:8091']
+
+  - job_name: 'monitor-service'
+    static_configs:
+      - targets: ['monitor-service:8092']

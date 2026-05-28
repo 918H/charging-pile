@@ -1,0 +1,150 @@
+version: '3.8'
+services:
+  nacos:
+    image: nacos/nacos-server:2.2.0
+    container_name: nacos
+    environment:
+      - MODE=standalone
+      - SPRING_DATASOURCE_PLATFORM=mysql
+      - MYSQL_SERVICE_HOST=mysql
+      - MYSQL_SERVICE_DB_NAME=nacos_config
+      - MYSQL_SERVICE_USER=root
+      - MYSQL_SERVICE_PASSWORD=root123
+    ports:
+      - "8848:8848"
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=root123
+      - MYSQL_DATABASE=charging_pile
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  # 12 个微服务
+  user-service:
+    build: ../backend/user-service
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+    depends_on:
+      - nacos
+      - mysql
+      - redis
+
+  charging-service:
+    build: ../backend/charging-service
+    container_name: charging-service
+    ports:
+      - "8082:8082"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+    depends_on:
+      - nacos
+      - mysql
+      - redis
+
+  order-service:
+    build: ../backend/order-service
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  payment-service:
+    build: ../backend/payment-service
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  coupon-service:
+    build: ../backend/coupon-service
+    container_name: coupon-service
+    ports:
+      - "8085:8085"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  statistics-service:
+    build: ../backend/statistics-service
+    container_name: statistics-service
+    ports:
+      - "8087:8087"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  message-service:
+    build: ../backend/message-service
+    container_name: message-service
+    ports:
+      - "8088:8088"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  support-service:
+    build: ../backend/support-service
+    container_name: support-service
+    ports:
+      - "8089:8089"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  marketing-service:
+    build: ../backend/marketing-service
+    container_name: marketing-service
+    ports:
+      - "8090:8090"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  finance-service:
+    build: ../backend/finance-service
+    container_name: finance-service
+    ports:
+      - "8091:8091"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  monitor-service:
+    build: ../backend/monitor-service
+    container_name: monitor-service
+    ports:
+      - "8092:8092"
+    environment:
+      - NACOS_SERVER_ADDR=nacos:8848
+
+  # 监控
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123
+
+volumes:
+  mysql_data:
