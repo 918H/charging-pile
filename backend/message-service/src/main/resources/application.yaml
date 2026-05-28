@@ -1,0 +1,8 @@
+spring:
+  application:
+    name: message-service
+  server:
+    port: 8088
+
+server:
+  port: 8088

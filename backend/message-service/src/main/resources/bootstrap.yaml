@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: message-service
+  cloud:
+    nacos:
+      discovery:
+        server-addr: ${NACOS_SERVER_ADDR:192.168.56.180:8848}
+        namespace: ${NACOS_NAMESPACE:dev}
+        group: charging-platform
+      config:
+        server-addr: ${NACOS_SERVER_ADDR:192.168.56.180:8848}
+        file-extension: yaml
+        refresh: true
+        shared-configs:
+          - data-id: common-config.yaml
+            refresh: true

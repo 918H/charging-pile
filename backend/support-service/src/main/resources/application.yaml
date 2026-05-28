@@ -1,0 +1,4 @@
+spring:
+  application: { name: support-service }
+  server: { port: 8089 }
+server: { port: 8089 }
