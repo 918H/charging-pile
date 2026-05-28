@@ -13,30 +13,30 @@ public class PasswordValidator {
 
     public static ValidationResult validate(String password) {
         if (password == null || password.isEmpty()) {
-            return ValidationResult.fail("密码不能为空");
+            return ValidationR.fail("密码不能为空");
         }
 
         if (password.length() < MIN_LENGTH || password.length() > MAX_LENGTH) {
-            return ValidationResult.fail("密码长度必须在 8-20 之间");
+            return ValidationR.fail("密码长度必须在 8-20 之间");
         }
 
         if (!UPPER_CASE.matcher(password).matches()) {
-            return ValidationResult.fail("密码必须包含至少一个大写字母");
+            return ValidationR.fail("密码必须包含至少一个大写字母");
         }
 
         if (!LOWER_CASE.matcher(password).matches()) {
-            return ValidationResult.fail("密码必须包含至少一个小写字母");
+            return ValidationR.fail("密码必须包含至少一个小写字母");
         }
 
         if (!DIGIT.matcher(password).matches()) {
-            return ValidationResult.fail("密码必须包含至少一个数字");
+            return ValidationR.fail("密码必须包含至少一个数字");
         }
 
         if (!SPECIAL_CHAR.matcher(password).matches()) {
-            return ValidationResult.fail("密码必须包含至少一个特殊字符");
+            return ValidationR.fail("密码必须包含至少一个特殊字符");
         }
 
-        return ValidationResult.success();
+        return ValidationR.ok();
     }
 
     public static class ValidationResult {

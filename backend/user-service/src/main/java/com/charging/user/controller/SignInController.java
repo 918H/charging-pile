@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.service.SignInService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -24,9 +24,9 @@ public class SignInController {
     public Result<Map<String, Object>> signIn(@RequestParam Long userId) {
         try {
             Map<String, Object> result = signInService.signIn(userId);
-            return Result.success(result);
+            return R.ok(result);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -34,7 +34,7 @@ public class SignInController {
     @ApiOperation("获取连续签到天数")
     public Result<Integer> getContinuousDays(@RequestParam Long userId) {
         int days = signInService.getContinuousDays(userId);
-        return Result.success(days);
+        return R.ok(days);
     }
 
     @GetMapping("/calendar")
@@ -45,7 +45,7 @@ public class SignInController {
             @RequestParam(required = false) Integer month
     ) {
         Map<String, Object> calendar = signInService.getCalendar(userId, year, month);
-        return Result.success(calendar);
+        return R.ok(calendar);
     }
 
     @PostMapping("/makeup")
@@ -57,9 +57,9 @@ public class SignInController {
         try {
             LocalDate localDate = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
             boolean success = signInService.makeUpSignIn(userId, localDate);
-            return Result.success(success);
+            return R.ok(success);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 }

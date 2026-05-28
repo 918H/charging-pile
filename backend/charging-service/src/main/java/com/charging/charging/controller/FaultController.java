@@ -1,6 +1,6 @@
 package com.charging.charging.controller;
 
-import com.charging.charging.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.charging.dto.FaultReportRequest;
 import com.charging.charging.entity.ChargingFault;
 import com.charging.charging.service.FaultService;
@@ -23,7 +23,7 @@ public class FaultController {
     @ApiOperation("上报故障")
     public Result<Boolean> reportFault(@RequestBody FaultReportRequest request) {
         boolean success = faultService.reportFault(request);
-        return success ? Result.success() : Result.error("上报失败");
+        return success ? R.ok() : R.fail("上报失败");
     }
 
     @GetMapping("/{faultId}")
@@ -31,9 +31,9 @@ public class FaultController {
     public Result<ChargingFault> getFaultDetail(@PathVariable Long faultId) {
         ChargingFault fault = faultService.getFaultDetail(faultId);
         if (fault == null) {
-            return Result.error("未找到故障记录");
+            return R.fail("未找到故障记录");
         }
-        return Result.success(fault);
+        return R.ok(fault);
     }
 
     @GetMapping("/pile/list")
@@ -43,14 +43,14 @@ public class FaultController {
             @RequestParam(required = false) Integer status
     ) {
         List<ChargingFault> faults = faultService.getPileFaults(pileId, status);
-        return Result.success(faults);
+        return R.ok(faults);
     }
 
     @GetMapping("/user/list")
     @ApiOperation("获取用户上报故障列表")
     public Result<List<ChargingFault>> getUserFaults(@RequestParam Long userId) {
         List<ChargingFault> faults = faultService.getUserFaults(userId);
-        return Result.success(faults);
+        return R.ok(faults);
     }
 
     @PostMapping("/{faultId}/handle")
@@ -61,6 +61,6 @@ public class FaultController {
             @RequestParam String response
     ) {
         boolean success = faultService.handleFault(faultId, handlerId, response);
-        return success ? Result.success() : Result.error("处理失败");
+        return success ? R.ok() : R.fail("处理失败");
     }
 }

@@ -1,6 +1,6 @@
 package com.charging.payment.controller;
 
-import com.charging.payment.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.payment.dto.PaymentRequest;
 import com.charging.payment.dto.PaymentResponse;
 import com.charging.payment.entity.PaymentRecord;
@@ -31,7 +31,7 @@ public class PaymentController {
             @RequestParam(required = false) Integer status
     ) {
         List<PaymentRecord> records = paymentRecordService.getList(userId, status);
-        return Result.success(records);
+        return R.ok(records);
     }
 
     @GetMapping("/{paymentId}")
@@ -39,9 +39,9 @@ public class PaymentController {
     public Result<PaymentRecord> detail(@PathVariable Long paymentId) {
         PaymentRecord record = paymentRecordService.getById(paymentId);
         if (record == null) {
-            return Result.error("未找到支付记录");
+            return R.fail("未找到支付记录");
         }
-        return Result.success(record);
+        return R.ok(record);
     }
 
     @GetMapping("/by-order")
@@ -54,9 +54,9 @@ public class PaymentController {
             .orElse(null);
         
         if (record == null) {
-            return Result.error("未找到支付记录");
+            return R.fail("未找到支付记录");
         }
-        return Result.success(record);
+        return R.ok(record);
     }
 
     @PostMapping("/create")
@@ -64,9 +64,9 @@ public class PaymentController {
     public Result<PaymentResponse> create(@RequestBody PaymentRequest request) {
         PaymentResponse response = paymentService.createPayment(request);
         if (response.isSuccess()) {
-            return Result.success(response);
+            return R.ok(response);
         } else {
-            return Result.error(response.getMessage());
+            return R.fail(response.getMessage());
         }
     }
 
@@ -77,6 +77,6 @@ public class PaymentController {
             @RequestParam String transactionId
     ) {
         boolean verified = paymentService.verifyPayment(orderNumber, transactionId);
-        return Result.success(verified);
+        return R.ok(verified);
     }
 }

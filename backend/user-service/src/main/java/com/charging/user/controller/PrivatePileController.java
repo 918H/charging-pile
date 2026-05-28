@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.PileDTO;
 import com.charging.user.entity.PileIncome;
 import com.charging.user.entity.PileReservation;
@@ -33,9 +33,9 @@ public class PrivatePileController {
     ) {
         try {
             PrivatePile pile = privatePileService.createPile(userId, dto);
-            return Result.success(pile);
+            return R.ok(pile);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -48,9 +48,9 @@ public class PrivatePileController {
     ) {
         try {
             PrivatePile pile = privatePileService.updatePile(userId, pileId, dto);
-            return Result.success(pile);
+            return R.ok(pile);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -58,14 +58,14 @@ public class PrivatePileController {
     @ApiOperation("获取用户的充电桩列表")
     public Result<List<PrivatePile>> getUserPiles(@RequestParam Long userId) {
         List<PrivatePile> piles = privatePileService.getUserPiles(userId);
-        return Result.success(piles);
+        return R.ok(piles);
     }
 
     @GetMapping("/detail")
     @ApiOperation("获取充电桩详情")
     public Result<PrivatePile> getPileDetail(@RequestParam Long pileId) {
         PrivatePile pile = privatePileService.getPileDetail(pileId);
-        return Result.success(pile);
+        return R.ok(pile);
     }
 
     @GetMapping("/nearby")
@@ -76,7 +76,7 @@ public class PrivatePileController {
             @RequestParam(required = false, defaultValue = "5.0") Double radius
     ) {
         List<PrivatePile> piles = privatePileService.getNearbyPiles(latitude, longitude, radius);
-        return Result.success(piles);
+        return R.ok(piles);
     }
 
     @PostMapping("/reserve")
@@ -91,9 +91,9 @@ public class PrivatePileController {
             LocalDateTime start = LocalDateTime.parse(startTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             LocalDateTime end = LocalDateTime.parse(endTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
             PileReservation reservation = privatePileService.reservePile(userId, pileId, start, end);
-            return Result.success(reservation);
+            return R.ok(reservation);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -105,9 +105,9 @@ public class PrivatePileController {
     ) {
         try {
             privatePileService.cancelReservation(userId, reservationId);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -119,9 +119,9 @@ public class PrivatePileController {
     ) {
         try {
             privatePileService.startCharging(userId, reservationId);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -134,9 +134,9 @@ public class PrivatePileController {
     ) {
         try {
             privatePileService.stopCharging(userId, reservationId, energy);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -147,13 +147,13 @@ public class PrivatePileController {
             @RequestParam(required = false) Integer status
     ) {
         List<PileIncome> records = privatePileService.getIncomeRecords(userId, status);
-        return Result.success(records);
+        return R.ok(records);
     }
 
     @GetMapping("/income/stats")
     @ApiOperation("获取收入统计")
     public Result<Map<String, Object>> getIncomeStats(@RequestParam Long userId) {
         Map<String, Object> stats = privatePileService.getIncomeStats(userId);
-        return Result.success(stats);
+        return R.ok(stats);
     }
 }

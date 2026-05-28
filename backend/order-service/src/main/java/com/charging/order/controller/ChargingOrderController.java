@@ -1,7 +1,7 @@
 package com.charging.order.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.charging.order.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.order.dto.*;
 import com.charging.order.entity.ChargingOrder;
 import com.charging.order.service.ChargingOrderService;
@@ -26,7 +26,7 @@ public class ChargingOrderController {
     @GetMapping("/list")
     public Result<List<ChargingOrder>> list(@RequestParam(required = false) Long userId) {
         List<ChargingOrder> list = chargingOrderService.getList();
-        return Result.success(list);
+        return R.ok(list);
     }
 
     @GetMapping("/page")
@@ -36,50 +36,50 @@ public class ChargingOrderController {
             @RequestParam(required = false) Long userId
     ) {
         Page<ChargingOrder> page = chargingOrderService.getPage(current, size, userId);
-        return Result.success(page);
+        return R.ok(page);
     }
 
     @GetMapping("/{orderId}")
     public Result<ChargingOrder> detail(@PathVariable Long orderId) {
         ChargingOrder order = chargingOrderService.getById(orderId);
         if (order == null) {
-            return Result.error("订单不存在");
+            return R.fail("订单不存在");
         }
-        return Result.success(order);
+        return R.ok(order);
     }
 
     @GetMapping("/number/{orderNumber}")
     public Result<ChargingOrder> getByNumber(@PathVariable String orderNumber) {
         ChargingOrder order = chargingOrderService.getByOrderNumber(orderNumber);
         if (order == null) {
-            return Result.error("订单不存在");
+            return R.fail("订单不存在");
         }
-        return Result.success(order);
+        return R.ok(order);
     }
 
     @PostMapping("/create")
     public Result<Boolean> create(@RequestBody ChargingOrder order) {
         boolean success = chargingOrderService.save(order);
-        return Result.success(success);
+        return R.ok(success);
     }
 
     @PutMapping("/{orderId}")
     public Result<Boolean> update(@PathVariable Long orderId, @RequestBody ChargingOrder order) {
         order.setOrderId(orderId);
         boolean success = chargingOrderService.update(order);
-        return Result.success(success);
+        return R.ok(success);
     }
 
     @PutMapping("/{orderId}/cancel")
     public Result<Boolean> cancel(@PathVariable Long orderId) {
         boolean success = chargingOrderService.cancel(orderId);
-        return success ? Result.success() : Result.error("取消失败");
+        return success ? R.ok() : R.fail("取消失败");
     }
 
     @PostMapping("/calculate")
     public Result<OrderCalculateResponse> calculate(@RequestBody OrderCalculateRequest request) {
         OrderCalculateResponse response = chargingOrderService.calculateOrder(request);
-        return Result.success(response);
+        return R.ok(response);
     }
 
     @GetMapping("/user/history")
@@ -88,7 +88,7 @@ public class ChargingOrderController {
             @RequestParam(required = false) Integer status
     ) {
         List<ChargingOrder> orders = chargingOrderService.getUserHistoryOrders(userId, status);
-        return Result.success(orders);
+        return R.ok(orders);
     }
 
     @GetMapping("/statistics")
@@ -101,13 +101,13 @@ public class ChargingOrderController {
         LocalDateTime end = endDate != null ? LocalDateTime.parse(endDate) : null;
         
         Map<String, Object> stats = chargingOrderService.getOrderStatistics(userId, start, end);
-        return Result.success(stats);
+        return R.ok(stats);
     }
 
     @GetMapping("/user/uncalculated")
     public Result<List<ChargingOrder>> uncalculatedOrders(@RequestParam Long userId) {
         List<ChargingOrder> orders = chargingOrderService.getUserHistoryOrders(userId, 1);
-        return Result.success(orders);
+        return R.ok(orders);
     }
 
     @PostMapping("/charging/start")
@@ -115,9 +115,9 @@ public class ChargingOrderController {
     public Result<ChargingStartResponse> startCharging(@RequestBody ChargingStartRequest request) {
         ChargingStartResponse response = chargingOrderService.startCharging(request);
         if (response.isSuccess()) {
-            return Result.success(response);
+            return R.ok(response);
         } else {
-            return Result.error(response.getMessage());
+            return R.fail(response.getMessage());
         }
     }
 
@@ -128,7 +128,7 @@ public class ChargingOrderController {
             @RequestParam(required = false) String reason
     ) {
         boolean success = chargingOrderService.stopCharging(orderId, reason);
-        return success ? Result.success() : Result.error("停止充电失败");
+        return success ? R.ok() : R.fail("停止充电失败");
     }
 
     @GetMapping("/charging/progress")
@@ -136,16 +136,16 @@ public class ChargingOrderController {
     public Result<ChargingProgressDTO> getChargingProgress(@RequestParam Long orderId) {
         ChargingProgressDTO progress = chargingOrderService.getChargingProgress(orderId);
         if (progress == null) {
-            return Result.error("未找到充电订单或充电已结束");
+            return R.fail("未找到充电订单或充电已结束");
         }
-        return Result.success(progress);
+        return R.ok(progress);
     }
 
     @GetMapping("/charging/price")
     @ApiOperation("获取充电桩实时电价")
     public Result<BigDecimal> getChargingPrice(@RequestParam Long pileId) {
         BigDecimal price = chargingOrderService.getUnitPrice(pileId);
-        return Result.success(price);
+        return R.ok(price);
     }
 
     @PostMapping("/charging/occupation-fee")
@@ -158,6 +158,6 @@ public class ChargingOrderController {
         LocalDateTime ft = LocalDateTime.parse(fullTime);
         LocalDateTime lt = LocalDateTime.parse(leaveTime);
         BigDecimal fee = chargingOrderService.calculateOccupationFee(pileId, ft, lt);
-        return Result.success(fee);
+        return R.ok(fee);
     }
 }

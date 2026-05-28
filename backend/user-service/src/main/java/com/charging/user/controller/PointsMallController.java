@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.ExchangeRequest;
 import com.charging.user.dto.PointsMallItemDTO;
 import com.charging.user.entity.PointsExchangeRecord;
@@ -27,7 +27,7 @@ public class PointsMallController {
             @RequestParam(required = false) Integer status
     ) {
         List<PointsMallItemDTO> items = pointsMallService.getItems(type, status);
-        return Result.success(items);
+        return R.ok(items);
     }
 
     @GetMapping("/item/detail")
@@ -35,9 +35,9 @@ public class PointsMallController {
     public Result<PointsMallItemDTO> getItemDetail(@RequestParam Long itemId) {
         PointsMallItemDTO item = pointsMallService.getItemDetail(itemId);
         if (item == null) {
-            return Result.error("商品不存在");
+            return R.fail("商品不存在");
         }
-        return Result.success(item);
+        return R.ok(item);
     }
 
     @PostMapping("/exchange")
@@ -48,9 +48,9 @@ public class PointsMallController {
     ) {
         try {
             PointsExchangeRecord record = pointsMallService.exchangeItem(userId, request);
-            return Result.success(record);
+            return R.ok(record);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -61,7 +61,7 @@ public class PointsMallController {
             @RequestParam(required = false) Integer status
     ) {
         List<PointsExchangeRecord> records = pointsMallService.getUserRecords(userId, status);
-        return Result.success(records);
+        return R.ok(records);
     }
 
     @PostMapping("/ship")
@@ -72,9 +72,9 @@ public class PointsMallController {
     ) {
         try {
             pointsMallService.shipItem(recordId, trackingNumber);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 }

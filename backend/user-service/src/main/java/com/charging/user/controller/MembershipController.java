@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.MembershipDTO;
 import com.charging.user.dto.MembershipDiscountDTO;
 import com.charging.user.entity.UserMembership;
@@ -25,14 +25,14 @@ public class MembershipController {
     @ApiOperation("获取会员等级列表")
     public Result<List<MembershipDTO>> getLevels() {
         List<MembershipDTO> levels = membershipService.getMembershipLevels();
-        return Result.success(levels);
+        return R.ok(levels);
     }
 
     @GetMapping("/user/current")
     @ApiOperation("获取用户当前会员")
     public Result<UserMembership> getCurrentMembership(@RequestParam Long userId) {
         UserMembership membership = membershipService.getUserMembership(userId);
-        return Result.success(membership);
+        return R.ok(membership);
     }
 
     @GetMapping("/user/discount")
@@ -69,7 +69,7 @@ public class MembershipController {
             dto.setFinalAmount(amount);
         }
         
-        return Result.success(dto);
+        return R.ok(dto);
     }
 
     @PostMapping("/user/upgrade")
@@ -80,9 +80,9 @@ public class MembershipController {
     ) {
         try {
             membershipService.upgradeMembership(userId, levelId);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -90,6 +90,6 @@ public class MembershipController {
     @ApiOperation("检查并更新会员等级")
     public Result<Boolean> checkMembership(@RequestParam Long userId) {
         membershipService.checkAndUpdateMembership(userId);
-        return Result.success();
+        return R.ok();
     }
 }

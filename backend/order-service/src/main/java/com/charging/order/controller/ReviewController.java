@@ -1,6 +1,6 @@
 package com.charging.order.controller;
 
-import com.charging.order.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.order.dto.ReviewRequest;
 import com.charging.order.dto.ReviewResponse;
 import com.charging.order.service.ReviewService;
@@ -24,7 +24,7 @@ public class ReviewController {
     @ApiOperation("创建评价")
     public Result<Boolean> createReview(@RequestBody ReviewRequest request) {
         boolean success = reviewService.createReview(request);
-        return success ? Result.success() : Result.error("评价失败，订单不存在或已评价");
+        return success ? R.ok() : R.fail("评价失败，订单不存在或已评价");
     }
 
     @GetMapping("/pile/list")
@@ -34,21 +34,21 @@ public class ReviewController {
             @RequestParam(required = false) Integer limit
     ) {
         List<ReviewResponse> reviews = reviewService.getPileReviews(pileId, limit);
-        return Result.success(reviews);
+        return R.ok(reviews);
     }
 
     @GetMapping("/user/list")
     @ApiOperation("获取用户评价列表")
     public Result<List<ReviewResponse>> getUserReviews(@RequestParam Long userId) {
         List<ReviewResponse> reviews = reviewService.getUserReviews(userId);
-        return Result.success(reviews);
+        return R.ok(reviews);
     }
 
     @GetMapping("/pile/rating")
     @ApiOperation("获取充电桩评分")
     public Result<Map<String, Object>> getPileRating(@RequestParam Long pileId) {
         Map<String, Object> rating = reviewService.getPileRating(pileId);
-        return Result.success(rating);
+        return R.ok(rating);
     }
 
     @GetMapping("/can-review")
@@ -58,6 +58,6 @@ public class ReviewController {
             @RequestParam Long orderId
     ) {
         boolean canReview = reviewService.canReview(userId, orderId);
-        return Result.success(canReview);
+        return R.ok(canReview);
     }
 }

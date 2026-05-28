@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.LoginRequest;
 import com.charging.user.dto.LoginResponse;
 import com.charging.user.dto.RegisterRequest;
@@ -32,18 +32,18 @@ public class AuthController {
     @PostMapping("/login")
     public Result<LoginResponse> login(@RequestBody @Validated LoginRequest request) {
         if (loginAttemptService.isLocked(request.getUsername())) {
-            return Result.error(String.format("账户已锁定，请 %d 分钟后再试", 
+            return R.fail(String.format("账户已锁定，请 %d 分钟后再试", 
                 loginAttemptService.getLockTimeMinutes()));
         }
 
         SysUser user = sysUserService.getByUsername(request.getUsername());
         if (user == null || !sysUserService.checkPassword(request.getPassword(), user.getPassword())) {
             loginAttemptService.loginFailed(request.getUsername());
-            return Result.error("用户名或密码错误");
+            return R.fail("用户名或密码错误");
         }
 
         if (user.getStatus() != 1) {
-            return Result.error("账户已被禁用");
+            return R.fail("账户已被禁用");
         }
 
         loginAttemptService.loginSucceeded(request.getUsername());
@@ -60,12 +60,12 @@ public class AuthController {
         response.setRealName(user.getRealName());
         response.setAvatarUrl(user.getAvatarUrl());
 
-        return Result.success(response);
+        return R.ok(response);
     }
 
     @PostMapping("/logout")
     public Result<Void> logout(@RequestHeader("Authorization") String token) {
-        return Result.success();
+        return R.ok();
     }
 
     @PostMapping("/refresh-token")
@@ -80,9 +80,9 @@ public class AuthController {
             Map<String, String> data = new HashMap<>();
             data.put("token", newToken);
             
-            return Result.success(data);
+            return R.ok(data);
         } catch (Exception e) {
-            return Result.error("刷新 Token 失败");
+            return R.fail("刷新 Token 失败");
         }
     }
 
@@ -90,12 +90,12 @@ public class AuthController {
     public Result<Boolean> register(@RequestBody @Validated RegisterRequest request) {
         PasswordValidator.ValidationResult result = PasswordValidator.validate(request.getPassword());
         if (!result.isValid()) {
-            return Result.error(result.getMessage());
+            return R.fail(result.getMessage());
         }
 
         SysUser existingUser = sysUserService.getByUsername(request.getUsername());
         if (existingUser != null) {
-            return Result.error("用户名已存在");
+            return R.fail("用户名已存在");
         }
 
         SysUser newUser = new SysUser();
@@ -106,6 +106,6 @@ public class AuthController {
         newUser.setAvatarUrl(null);
 
         boolean success = sysUserService.register(newUser, request.getPassword());
-        return success ? Result.success(true) : Result.error("注册失败");
+        return success ? R.ok(true) : R.fail("注册失败");
     }
 }

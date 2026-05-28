@@ -1,6 +1,6 @@
 package com.charging.payment.controller;
 
-import com.charging.payment.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.payment.service.PaymentGatewayService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -26,9 +26,9 @@ public class PaymentGatewayController {
     ) {
         try {
             String transactionId = paymentGatewayService.createOrder(orderNumber, amount, userId);
-            return Result.success(transactionId);
+            return R.ok(transactionId);
         } catch (Exception e) {
-            return Result.error("创建支付订单失败：" + e.getMessage());
+            return R.fail("创建支付订单失败：" + e.getMessage());
         }
     }
 
@@ -40,9 +40,9 @@ public class PaymentGatewayController {
     ) {
         try {
             boolean verified = paymentGatewayService.verifyOrder(orderNumber, transactionId);
-            return Result.success(verified);
+            return R.ok(verified);
         } catch (Exception e) {
-            return Result.error("验证支付失败：" + e.getMessage());
+            return R.fail("验证支付失败：" + e.getMessage());
         }
     }
 
@@ -55,9 +55,9 @@ public class PaymentGatewayController {
     ) {
         try {
             boolean success = paymentGatewayService.refundOrder(orderNumber, transactionId, amount);
-            return Result.success(success);
+            return R.ok(success);
         } catch (Exception e) {
-            return Result.error("退款失败：" + e.getMessage());
+            return R.fail("退款失败：" + e.getMessage());
         }
     }
 
@@ -66,9 +66,9 @@ public class PaymentGatewayController {
     public Result<String> queryOrderStatus(@RequestParam String orderNumber) {
         try {
             String status = paymentGatewayService.queryOrderStatus(orderNumber);
-            return Result.success(status);
+            return R.ok(status);
         } catch (Exception e) {
-            return Result.error("查询失败：" + e.getMessage());
+            return R.fail("查询失败：" + e.getMessage());
         }
     }
 }

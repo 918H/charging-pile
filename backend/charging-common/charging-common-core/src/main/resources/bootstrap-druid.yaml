@@ -1,0 +1,50 @@
+# Druid 数据库连接池配置模板
+# 各服务在 application.yaml 中引用此配置
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      # 基本配置
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:charging_db}?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      username: ${MYSQL_USERNAME:root}
+      password: ${MYSQL_PASSWORD:root}
+      
+      # 连接池配置
+      initial-size: 5                    # 初始连接数
+      min-idle: 10                       # 最小空闲连接
+      max-active: 20                     # 最大活跃连接
+      max-wait: 60000                    # 获取连接最大等待时间 (ms)
+      
+      # 连接检测
+      validation-query: SELECT 1         # 验证连接的查询
+      test-while-idle: true              # 空闲时检测
+      test-on-borrow: false              # 借出时检测（影响性能）
+      test-on-return: false              # 归还时检测（影响性能）
+      
+      # 缓存配置
+      pool-prepared-statements: true     # 开启 PSCache
+      max-pool-prepared-statement-per-connection-size: 20  # 每个连接的最大 PSCache 大小
+      
+      # 过滤器配置
+      filters: stat,wall,slf4j          # 监控、防火墙、日志
+      
+      # 连接属性
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000
+      
+      # Web 监控配置
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: "*.js,*.gif,*.jpg,*.png,*.css,*.ico,/druid/*"
+      
+      # StatViewServlet 配置（Druid 监控页面）
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        login-username: admin           # 建议通过环境变量配置
+        login-password: charging123     # 建议通过环境变量配置
+        reset-enable: false             # 禁止重置统计数据
+        allow: 127.0.0.1                # 允许访问的 IP
+        deny:                           # 禁止访问的 IP（可选）

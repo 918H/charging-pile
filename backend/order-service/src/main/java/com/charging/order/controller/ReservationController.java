@@ -1,6 +1,6 @@
 package com.charging.order.controller;
 
-import com.charging.order.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.order.dto.ReservationRequest;
 import com.charging.order.dto.ReservationResponse;
 import com.charging.order.entity.ChargingReservation;
@@ -26,9 +26,9 @@ public class ReservationController {
     public Result<ReservationResponse> create(@RequestBody ReservationRequest request) {
         ReservationResponse response = reservationService.createReservation(request);
         if (response.isSuccess()) {
-            return Result.success(response);
+            return R.ok(response);
         } else {
-            return Result.error(response.getMessage());
+            return R.fail(response.getMessage());
         }
     }
 
@@ -39,7 +39,7 @@ public class ReservationController {
             @RequestParam(required = false) String reason
     ) {
         boolean success = reservationService.cancelReservation(reservationId, reason);
-        return success ? Result.success() : Result.error("取消失败");
+        return success ? R.ok() : R.fail("取消失败");
     }
 
     @GetMapping("/{reservationId}")
@@ -47,9 +47,9 @@ public class ReservationController {
     public Result<ChargingReservation> detail(@PathVariable Long reservationId) {
         ChargingReservation reservation = reservationService.getReservation(reservationId);
         if (reservation == null) {
-            return Result.error("预约不存在");
+            return R.fail("预约不存在");
         }
-        return Result.success(reservation);
+        return R.ok(reservation);
     }
 
     @GetMapping("/user/list")
@@ -59,7 +59,7 @@ public class ReservationController {
             @RequestParam(required = false) Integer status
     ) {
         List<ChargingReservation> reservations = reservationService.getUserReservations(userId, status);
-        return Result.success(reservations);
+        return R.ok(reservations);
     }
 
     @GetMapping("/check")
@@ -75,6 +75,6 @@ public class ReservationController {
             LocalDateTime.parse(startTime),
             LocalDateTime.parse(endTime)
         );
-        return Result.success(available);
+        return R.ok(available);
     }
 }

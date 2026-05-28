@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.WithdrawalRequest;
 import com.charging.user.entity.PileWithdrawal;
 import com.charging.user.service.PileWithdrawalService;
@@ -28,9 +28,9 @@ public class PileWithdrawalController {
     ) {
         try {
             PileWithdrawal withdrawal = pileWithdrawalService.createWithdrawal(userId, request);
-            return Result.success(withdrawal);
+            return R.ok(withdrawal);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -41,14 +41,14 @@ public class PileWithdrawalController {
             @RequestParam(required = false) Integer status
     ) {
         List<PileWithdrawal> withdrawals = pileWithdrawalService.getUserWithdrawals(userId, status);
-        return Result.success(withdrawals);
+        return R.ok(withdrawals);
     }
 
     @GetMapping("/user/stats")
     @ApiOperation("获取提现统计")
     public Result<Map<String, Object>> getWithdrawalStats(@RequestParam Long userId) {
         Map<String, Object> stats = pileWithdrawalService.getWithdrawalStats(userId);
-        return Result.success(stats);
+        return R.ok(stats);
     }
 
     @PostMapping("/approve")
@@ -59,9 +59,9 @@ public class PileWithdrawalController {
     ) {
         try {
             pileWithdrawalService.approveWithdrawal(withdrawalId, transactionId);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -73,9 +73,9 @@ public class PileWithdrawalController {
     ) {
         try {
             pileWithdrawalService.rejectWithdrawal(withdrawalId, reason);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 }

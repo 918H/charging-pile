@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.ChargingPackageDTO;
 import com.charging.user.entity.ChargingPackage;
 import com.charging.user.entity.UserPackage;
@@ -24,7 +24,7 @@ public class ChargingPackageController {
     @ApiOperation("获取可购买套餐列表")
     public Result<List<ChargingPackageDTO>> getAvailablePackages() {
         List<ChargingPackageDTO> packages = chargingPackageService.getAvailablePackages();
-        return Result.success(packages);
+        return R.ok(packages);
     }
 
     @GetMapping("/detail")
@@ -32,9 +32,9 @@ public class ChargingPackageController {
     public Result<ChargingPackageDTO> getPackageDetail(@RequestParam Long packageId) {
         ChargingPackageDTO pkg = chargingPackageService.getPackageDetail(packageId);
         if (pkg == null) {
-            return Result.error("套餐不存在");
+            return R.fail("套餐不存在");
         }
-        return Result.success(pkg);
+        return R.ok(pkg);
     }
 
     @PostMapping("/purchase")
@@ -45,9 +45,9 @@ public class ChargingPackageController {
     ) {
         try {
             UserPackage userPackage = chargingPackageService.purchasePackage(userId, packageId);
-            return Result.success(userPackage);
+            return R.ok(userPackage);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -55,6 +55,6 @@ public class ChargingPackageController {
     @ApiOperation("获取用户已购套餐")
     public Result<List<UserPackage>> getUserPackages(@RequestParam Long userId) {
         List<UserPackage> packages = chargingPackageService.getUserPackages(userId);
-        return Result.success(packages);
+        return R.ok(packages);
     }
 }

@@ -1,6 +1,6 @@
 package com.charging.payment.controller;
 
-import com.charging.payment.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.payment.dto.RefundRequest;
 import com.charging.payment.entity.PaymentRefund;
 import com.charging.payment.service.PaymentRefundService;
@@ -24,9 +24,9 @@ public class PaymentRefundController {
     public Result<String> applyRefund(@RequestBody RefundRequest request) {
         String refundNumber = paymentRefundService.applyRefund(request);
         if (refundNumber != null) {
-            return Result.success(refundNumber);
+            return R.ok(refundNumber);
         } else {
-            return Result.error("退款申请失败，订单不存在或未支付");
+            return R.fail("退款申请失败，订单不存在或未支付");
         }
     }
 
@@ -37,7 +37,7 @@ public class PaymentRefundController {
             @RequestParam Long auditorId
     ) {
         boolean success = paymentRefundService.approveRefund(refundId, auditorId);
-        return success ? Result.success() : Result.error("审核失败");
+        return success ? R.ok() : R.fail("审核失败");
     }
 
     @PostMapping("/{refundId}/reject")
@@ -48,7 +48,7 @@ public class PaymentRefundController {
             @RequestParam String reason
     ) {
         boolean success = paymentRefundService.rejectRefund(refundId, auditorId, reason);
-        return success ? Result.success() : Result.error("操作失败");
+        return success ? R.ok() : R.fail("操作失败");
     }
 
     @GetMapping("/{refundId}")
@@ -56,23 +56,23 @@ public class PaymentRefundController {
     public Result<PaymentRefund> getRefundDetail(@PathVariable Long refundId) {
         PaymentRefund refund = paymentRefundService.getRefundDetail(refundId);
         if (refund == null) {
-            return Result.error("未找到退款记录");
+            return R.fail("未找到退款记录");
         }
-        return Result.success(refund);
+        return R.ok(refund);
     }
 
     @GetMapping("/user/list")
     @ApiOperation("获取用户退款列表")
     public Result<List<PaymentRefund>> getUserRefunds(@RequestParam Long userId) {
         List<PaymentRefund> refunds = paymentRefundService.getUserRefunds(userId);
-        return Result.success(refunds);
+        return R.ok(refunds);
     }
 
     @GetMapping("/pending")
     @ApiOperation("获取待审核退款")
     public Result<List<PaymentRefund>> getPendingRefunds() {
         List<PaymentRefund> refunds = paymentRefundService.getPendingRefunds();
-        return Result.success(refunds);
+        return R.ok(refunds);
     }
 
     @PostMapping("/{refundId}/process")
@@ -82,6 +82,6 @@ public class PaymentRefundController {
             @RequestParam String transactionId
     ) {
         boolean success = paymentRefundService.processRefundPayment(refundId, transactionId);
-        return success ? Result.success() : Result.error("打款失败");
+        return success ? R.ok() : R.fail("打款失败");
     }
 }

@@ -1,6 +1,6 @@
 package com.charging.common.controller;
 
-import com.charging.common.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.common.service.FileUploadService;
 import com.charging.common.service.NotificationService;
 import org.springframework.web.bind.annotation.*;
@@ -28,9 +28,9 @@ public class FileUploadController {
             data.put("name", file.getOriginalFilename());
             data.put("size", String.valueOf(file.getSize()));
             
-            return Result.success(data);
+            return R.ok(data);
         } catch (Exception e) {
-            return Result.error("上传失败：" + e.getMessage());
+            return R.fail("上传失败：" + e.getMessage());
         }
     }
 }

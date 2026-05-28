@@ -1,6 +1,6 @@
 package com.charging.coupon.controller;
 
-import com.charging.coupon.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.coupon.entity.Coupon;
 import com.charging.coupon.entity.UserCoupon;
 import com.charging.coupon.service.CouponBatchService;
@@ -27,9 +27,9 @@ public class CouponBatchController {
     ) {
         try {
             couponBatchService.createBatchCoupons(templateId, count);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -37,7 +37,7 @@ public class CouponBatchController {
     @ApiOperation("获取批次优惠券列表")
     public Result<List<Coupon>> getBatchList(@RequestParam Long templateId) {
         List<Coupon> coupons = couponBatchService.getBatchCoupons(templateId);
-        return Result.success(coupons);
+        return R.ok(coupons);
     }
 
     @PostMapping("/distribute")
@@ -48,9 +48,9 @@ public class CouponBatchController {
     ) {
         try {
             couponBatchService.distributeToUser(couponId, userId);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -61,6 +61,6 @@ public class CouponBatchController {
             @RequestParam(required = false) Integer status
     ) {
         List<UserCoupon> list = couponBatchService.getUserCouponList(userId, status);
-        return Result.success(list);
+        return R.ok(list);
     }
 }

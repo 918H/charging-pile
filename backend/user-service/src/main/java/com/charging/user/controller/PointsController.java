@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.entity.PointsRecord;
 import com.charging.user.entity.UserPoints;
 import com.charging.user.service.PointsService;
@@ -23,7 +23,7 @@ public class PointsController {
     @ApiOperation("获取用户积分")
     public Result<UserPoints> getUserPoints(@RequestParam Long userId) {
         UserPoints points = pointsService.getUserPoints(userId);
-        return Result.success(points);
+        return R.ok(points);
     }
 
     @GetMapping("/records")
@@ -33,7 +33,7 @@ public class PointsController {
             @RequestParam(required = false) Integer type
     ) {
         List<PointsRecord> records = pointsService.getPointsRecords(userId, type);
-        return Result.success(records);
+        return R.ok(records);
     }
 
     @PostMapping("/add")
@@ -46,9 +46,9 @@ public class PointsController {
     ) {
         try {
             pointsService.addPoints(userId, points, description, relatedOrder);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -61,9 +61,9 @@ public class PointsController {
     ) {
         try {
             pointsService.consumePoints(userId, points, description);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 }

@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.entity.SysUser;
 import com.charging.user.service.SysUserService;
 import com.charging.user.util.JwtUtil;
@@ -30,9 +30,9 @@ public class ProfileController {
                 user.setPassword(null);
             }
             
-            return Result.success(user);
+            return R.ok(user);
         } catch (Exception e) {
-            return Result.error("获取用户信息失败");
+            return R.fail("获取用户信息失败");
         }
     }
 
@@ -45,7 +45,7 @@ public class ProfileController {
             
             SysUser existingUser = sysUserService.getByUserId(userId);
             if (existingUser == null) {
-                return Result.error("用户不存在");
+                return R.fail("用户不存在");
             }
             
             existingUser.setRealName(user.getRealName());
@@ -54,9 +54,9 @@ public class ProfileController {
             existingUser.setAvatarUrl(user.getAvatarUrl());
             
             sysUserService.updateProfile(existingUser);
-            return Result.success();
+            return R.ok();
         } catch (Exception e) {
-            return Result.error("更新用户信息失败");
+            return R.fail("更新用户信息失败");
         }
     }
 }

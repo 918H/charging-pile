@@ -1,6 +1,6 @@
 package com.charging.user.controller;
 
-import com.charging.user.common.Result;
+import com.charging.common.core.response.R;
 import com.charging.user.dto.RechargeRequest;
 import com.charging.user.entity.RechargeRecord;
 import com.charging.user.entity.UserRechargeCard;
@@ -24,14 +24,14 @@ public class RechargeCardController {
     @ApiOperation("获取用户储值卡")
     public Result<UserRechargeCard> getCard(@RequestParam Long userId) {
         UserRechargeCard card = rechargeCardService.getOrCreateCard(userId);
-        return Result.success(card);
+        return R.ok(card);
     }
 
     @GetMapping("/records")
     @ApiOperation("获取充值记录")
     public Result<List<RechargeRecord>> getRecords(@RequestParam Long userId) {
         List<RechargeRecord> records = rechargeCardService.getRechargeRecords(userId);
-        return Result.success(records);
+        return R.ok(records);
     }
 
     @PostMapping("/create")
@@ -42,9 +42,9 @@ public class RechargeCardController {
     ) {
         try {
             String recordId = rechargeCardService.recharge(userId, request);
-            return Result.success(recordId);
+            return R.ok(recordId);
         } catch (Exception e) {
-            return Result.error(e.getMessage());
+            return R.fail(e.getMessage());
         }
     }
 
@@ -56,6 +56,6 @@ public class RechargeCardController {
             @RequestParam String orderNumber
     ) {
         boolean success = rechargeCardService.payByCard(userId, amount, orderNumber);
-        return Result.success(success);
+        return R.ok(success);
     }
 }
